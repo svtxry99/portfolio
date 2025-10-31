@@ -813,7 +813,7 @@
                 <p>Образование: Высшее</p>
                 <p>Общий педагогический стаж: <strong>31 год </strong></p>
                 <p>Стаж работы в руководящей должности: <strong>12 лет</strong></p>
-                 <p> Стаж работы в роли руководителя Средней школы №3 г. Островца: <strong>6 лет</strong></p>
+                 <p> Стаж работы в роли руководителя средней школы №3 г. Островца: <strong>6 лет</strong></p>
             </div>
             
             <div class="text-section" id="slideshow-text">
@@ -2145,18 +2145,21 @@
 
    <!-- Final Page -->
 <section id="final-page" class="content-page">
-    <!-- Big Video Section - Now takes 85% of viewport height -->
+    <!-- Big Video Section -->
     <div class="video-section" style="width: 100%; height: 85vh; position: relative; background: #000;">
         <video 
             id="final-video" 
             style="width: 100%; height: 100%; object-fit: cover;" 
-            autoplay 
             playsinline
-            controls
+            muted
         >
             <source src="footage/IMG_7776.MOV" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        <!-- Play button overlay -->
+        <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; cursor: pointer; background: rgba(0,0,0,0.7); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+            <div style="color: white; font-size: 2rem;">▶</div>
+        </div>
     </div>
 
     <!-- Conclusion Content - Reduced padding since video is bigger -->
@@ -2222,498 +2225,470 @@ function restartExperience() {
       
 
        <script>
-        // DOM Elements
-        const welcomePage = document.getElementById('welcome-page');
-        const mapPage = document.getElementById('map-page');
-        const videoContainer = document.getElementById('video-container');
-        const welcomeVideo = document.getElementById('welcome-video');
-        const playButton = document.getElementById('play-button');
-        const photo1Container = document.getElementById('photo1-container');
-        const photo2Container = document.getElementById('photo2-container');
-        const photo3Container = document.getElementById('photo3-container');
-        const photo4Container = document.getElementById('photo4-container');
-        const welcomeMessage = document.getElementById('welcome-message');
-        const photo4Text = document.getElementById('photo4-text');
-        const slideshowText = document.getElementById('slideshow-text');
-        const interactivePoints = document.querySelectorAll('.interactive-point');
-        const finalPoint = document.getElementById('final-point');
-        const progressText = document.getElementById('progress-text');
-        const progressFill = document.getElementById('progress-fill');
-        const contentPages = document.querySelectorAll('.content-page');
-        const backToMapButtons = document.querySelectorAll('.back-to-map');
-        const nextPointButtons = document.querySelectorAll('.next-point');
-        const restartButton = document.querySelector('.restart-experience');
+    // DOM Elements
+    const welcomePage = document.getElementById('welcome-page');
+    const mapPage = document.getElementById('map-page');
+    const videoContainer = document.getElementById('video-container');
+    const welcomeVideo = document.getElementById('welcome-video');
+    const playButton = document.getElementById('play-button');
+    const photo1Container = document.getElementById('photo1-container');
+    const photo2Container = document.getElementById('photo2-container');
+    const photo3Container = document.getElementById('photo3-container');
+    const photo4Container = document.getElementById('photo4-container');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const photo4Text = document.getElementById('photo4-text');
+    const slideshowText = document.getElementById('slideshow-text');
+    const interactivePoints = document.querySelectorAll('.interactive-point');
+    const finalPoint = document.getElementById('final-point');
+    const progressText = document.getElementById('progress-text');
+    const progressFill = document.getElementById('progress-fill');
+    const contentPages = document.querySelectorAll('.content-page');
+    const backToMapButtons = document.querySelectorAll('.back-to-map');
+    const nextPointButtons = document.querySelectorAll('.next-point');
+    const restartButton = document.querySelector('.restart-experience');
 
-        // State variables
-        let completedPoints = new Set();
-        let videoStarted = false;
+    // State variables
+    let completedPoints = new Set();
+    let videoStarted = false;
 
-        // Initialize the website
-        function init() {
-            const progressLoaded = loadProgress();
-            
-            if (!progressLoaded) {
-                playButton.addEventListener('click', startVideo);
-                welcomeVideo.addEventListener('ended', startSlideshow);
-            }
-            
-            interactivePoints.forEach(point => {
-                point.addEventListener('click', handlePointClick);
-                point.addEventListener('mouseenter', showPointInfo);
-                point.addEventListener('mouseleave', hidePointInfo);
+    // Final video play functionality
+    function initFinalVideo() {
+        const finalVideo = document.getElementById('final-video');
+        const playOverlay = document.querySelector('.play-button-overlay');
+        
+        if (finalVideo && playOverlay) {
+            playOverlay.addEventListener('click', function() {
+                // Unmute and play the video
+                finalVideo.muted = false;
+                finalVideo.play().then(() => {
+                    // Hide the play button when video starts playing
+                    playOverlay.style.display = 'none';
+                }).catch(error => {
+                    console.log('Play failed:', error);
+                    // Show controls if autoplay fails
+                    finalVideo.controls = true;
+                });
             });
             
-            backToMapButtons.forEach(button => {
-                button.addEventListener('click', showMapPage);
+            // Show play button again if video ends
+            finalVideo.addEventListener('ended', function() {
+                playOverlay.style.display = 'flex';
             });
             
-            if (restartButton) {
-                restartButton.addEventListener('click', restartExperience);
-            }
-            
-            initAllCarousels();
-            window.addEventListener('beforeunload', saveProgress);
-        }
-
-        function startVideo() {
-            if (videoStarted) return;
-            videoStarted = true;
-            playButton.style.display = 'none';
-            
-            welcomeVideo.play().then(() => {
-                setTimeout(() => {
-                    if (!videoContainer.classList.contains('hidden')) {
-                        startSlideshow();
-                    }
-                }, (welcomeVideo.duration * 1000) + 1000);
-            }).catch(error => {
-                startSlideshow();
+            // Show play button if video is paused
+            finalVideo.addEventListener('pause', function() {
+                playOverlay.style.display = 'flex';
             });
         }
-// International Section Navigation
-function initInternationalSection() {
-    const internationalSection = document.getElementById('page3');
-    if (!internationalSection) return;
-
-    const subpages = internationalSection.querySelectorAll('.academic-subpage');
-    const prevBtn = internationalSection.querySelector('.prev-section');
-    const nextBtn = internationalSection.querySelector('.next-section');
-    const indicators = internationalSection.querySelectorAll('.section-indicator');
-    
-    let currentSubpage = 0;
-
-    function showSubpage(index) {
-        subpages.forEach(page => page.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
-        subpages[index].classList.add('active');
-        indicators[index].classList.add('active');
-        initCarousel(subpages[index]);
-        currentSubpage = index;
-        prevBtn.style.opacity = index === 0 ? '0.5' : '1';
-        nextBtn.style.opacity = index === subpages.length - 1 ? '0.5' : '1';
     }
 
-    prevBtn.addEventListener('click', () => {
-        if (currentSubpage > 0) showSubpage(currentSubpage - 1);
-    });
+    // Call this function when showing the final page
+    function showContentPage(pageId) {
+        mapPage.style.display = 'none';
+        const contentPage = document.getElementById(pageId);
+        if (contentPage) {
+            contentPage.style.display = 'block';
+            contentPage.classList.add('fade-in');
+            
+            if (pageId === 'page1') {
+                initAcademicSection();
+            } else if (pageId === 'page3') {
+                initInternationalSection();
+            } else if (pageId === 'final-page') {
+                initFinalVideo(); // Initialize final video when page loads
+            } else {
+                initCarousel(contentPage);
+            }
+        }
+        saveProgress();
+    }
 
-    nextBtn.addEventListener('click', () => {
-        if (currentSubpage < subpages.length - 1) showSubpage(currentSubpage + 1);
-    });
-
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => showSubpage(index));
-    });
-
-    showSubpage(0);
-}
-        // Add this to your existing JavaScript code
-
-// Reset Progress Function
-function resetProgress() {
-    if (confirm("Вы уверены, что хотите сбросить весь прогресс? Все пройденные точки будут сброшены.")) {
-        // Clear localStorage
-        localStorage.clear();
+    function startVideo() {
+        if (videoStarted) return;
+        videoStarted = true;
+        playButton.style.display = 'none';
         
-        // Remove completed classes from all points
-        document.querySelectorAll('.interactive-point').forEach(point => {
-            point.classList.remove('completed');
+        welcomeVideo.play().then(() => {
+            setTimeout(() => {
+                if (!videoContainer.classList.contains('hidden')) {
+                    startSlideshow();
+                }
+            }, (welcomeVideo.duration * 1000) + 1000);
+        }).catch(error => {
+            startSlideshow();
+        });
+    }
+
+    // International Section Navigation
+    function initInternationalSection() {
+        const internationalSection = document.getElementById('page3');
+        if (!internationalSection) return;
+
+        const subpages = internationalSection.querySelectorAll('.academic-subpage');
+        const prevBtn = internationalSection.querySelector('.prev-section');
+        const nextBtn = internationalSection.querySelector('.next-section');
+        const indicators = internationalSection.querySelectorAll('.section-indicator');
+        
+        let currentSubpage = 0;
+
+        function showSubpage(index) {
+            subpages.forEach(page => page.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            subpages[index].classList.add('active');
+            indicators[index].classList.add('active');
+            initCarousel(subpages[index]);
+            currentSubpage = index;
+            prevBtn.style.opacity = index === 0 ? '0.5' : '1';
+            nextBtn.style.opacity = index === subpages.length - 1 ? '0.5' : '1';
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSubpage > 0) showSubpage(currentSubpage - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSubpage < subpages.length - 1) showSubpage(currentSubpage + 1);
+        });
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => showSubpage(index));
+        });
+
+        showSubpage(0);
+    }
+
+    // Reset Progress Function
+    function resetProgress() {
+        if (confirm("Вы уверены, что хотите сбросить весь прогресс? Все пройденные точки будут сброшены.")) {
+            // Clear localStorage
+            localStorage.clear();
+            
+            // Remove completed classes from all points
+            document.querySelectorAll('.interactive-point').forEach(point => {
+                point.classList.remove('completed');
+            });
+            
+            // Hide final point
+            const finalPoint = document.getElementById('final-point');
+            if (finalPoint) {
+                finalPoint.style.display = 'none';
+            }
+            
+            // Reset progress display
+            const progressText = document.getElementById('progress-text');
+            const progressFill = document.getElementById('progress-fill');
+            if (progressText && progressFill) {
+                progressText.textContent = "0/7 Шагов Пройдено";
+                progressFill.style.width = "0%";
+            }
+            
+            // Clear completed points set
+            if (typeof completedPoints !== 'undefined') {
+                completedPoints.clear();
+            }
+            
+            // Show confirmation message
+            alert("Прогресс сброшен! Вы можете начать маршрут заново.");
+            
+            // If we're on a content page, go back to map
+            if (mapPage.style.display === 'none') {
+                showMapPage();
+            }
+        }
+    }
+
+    // Add event listener for reset button
+    function initResetButton() {
+        const resetBtn = document.querySelector('.reset-progress-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', resetProgress);
+        }
+    }
+
+    // Initialize the website
+    function init() {
+        const progressLoaded = loadProgress();
+        
+        if (!progressLoaded) {
+            playButton.addEventListener('click', startVideo);
+            welcomeVideo.addEventListener('ended', startSlideshow);
+        }
+        
+        interactivePoints.forEach(point => {
+            point.addEventListener('click', handlePointClick);
+            point.addEventListener('mouseenter', showPointInfo);
+            point.addEventListener('mouseleave', hidePointInfo);
         });
         
-        // Hide final point
-        const finalPoint = document.getElementById('final-point');
-        if (finalPoint) {
-            finalPoint.style.display = 'none';
+        backToMapButtons.forEach(button => {
+            button.addEventListener('click', showMapPage);
+        });
+        
+        if (restartButton) {
+            restartButton.addEventListener('click', restartExperience);
         }
         
-        // Reset progress display
-        const progressText = document.getElementById('progress-text');
-        const progressFill = document.getElementById('progress-fill');
-        if (progressText && progressFill) {
-            progressText.textContent = "0/7 Шагов Пройдено";
-            progressFill.style.width = "0%";
-        }
+        // Initialize reset button
+        initResetButton();
         
-        // Clear completed points set
-        if (typeof completedPoints !== 'undefined') {
-            completedPoints.clear();
-        }
-        
-        // Show confirmation message
-        alert("Прогресс сброшен! Вы можете начать маршрут заново.");
-        
-        // If we're on a content page, go back to map
-        if (mapPage.style.display === 'none') {
-            showMapPage();
-        }
+        initAllCarousels();
+        window.addEventListener('beforeunload', saveProgress);
     }
-}
 
-// Add event listener for reset button
-function initResetButton() {
-    const resetBtn = document.querySelector('.reset-progress-btn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', resetProgress);
-    }
-}
-
-// Update your existing init function to include the reset button
-function init() {
-    const progressLoaded = loadProgress();
-    
-    if (!progressLoaded) {
-        playButton.addEventListener('click', startVideo);
-        welcomeVideo.addEventListener('ended', startSlideshow);
-    }
-    
-    interactivePoints.forEach(point => {
-        point.addEventListener('click', handlePointClick);
-        point.addEventListener('mouseenter', showPointInfo);
-        point.addEventListener('mouseleave', hidePointInfo);
-    });
-    
-    backToMapButtons.forEach(button => {
-        button.addEventListener('click', showMapPage);
-    });
-    
-    if (restartButton) {
-        restartButton.addEventListener('click', restartExperience);
-    }
-    
-    // Initialize reset button
-    initResetButton();
-    
-    initAllCarousels();
-    window.addEventListener('beforeunload', saveProgress);
-}
-
-        function startSlideshow() {
-            videoContainer.classList.remove('active');
-            videoContainer.classList.add('hidden');
-            welcomeMessage.classList.add('active');
-            showText('photo4-text');
-            
-            showMedia(photo4Container, 10000, function() {
-                showText('slideshow-text');
-                showMedia(photo1Container, 4000, function() {
-                    showMedia(photo2Container, 4000, function() {
-                        showMedia(photo3Container, 4000, function() {
-                            showMapPage();
-                        });
+    function startSlideshow() {
+        videoContainer.classList.remove('active');
+        videoContainer.classList.add('hidden');
+        welcomeMessage.classList.add('active');
+        showText('photo4-text');
+        
+        showMedia(photo4Container, 10000, function() {
+            showText('slideshow-text');
+            showMedia(photo1Container, 4000, function() {
+                showMedia(photo2Container, 4000, function() {
+                    showMedia(photo3Container, 4000, function() {
+                        showMapPage();
                     });
                 });
             });
-        }
+        });
+    }
 
-        function showMedia(mediaElement, duration, callback) {
-            mediaElement.classList.add('active');
-            setTimeout(() => {
-                mediaElement.classList.remove('active');
-                setTimeout(callback, 500);
-            }, duration);
-        }
+    function showMedia(mediaElement, duration, callback) {
+        mediaElement.classList.add('active');
+        setTimeout(() => {
+            mediaElement.classList.remove('active');
+            setTimeout(callback, 500);
+        }, duration);
+    }
 
-        function showText(textId) {
-            const textSections = document.querySelectorAll('.text-section');
-            textSections.forEach(section => {
-                section.classList.remove('active');
-            });
-            const targetText = document.getElementById(textId);
-            if (targetText) {
-                targetText.classList.add('active');
-            }
-        }
-
-        function showMapPage() {
-            welcomePage.style.display = 'none';
-            mapPage.style.display = 'block';
-            contentPages.forEach(page => {
-                page.style.display = 'none';
-            });
-            updateProgress();
-            saveProgress();
-        }
-
-        function handlePointClick(event) {
-            const point = event.currentTarget;
-            const pageId = point.getAttribute('data-page');
-            
-            if (!point.id.startsWith('final')) {
-                completedPoints.add(point.id);
-                point.classList.add('completed');
-            }
-            
-            showContentPage(pageId);
-            updateProgress();
-            saveProgress();
-        }
-
-        function showContentPage(pageId) {
-    mapPage.style.display = 'none';
-    const contentPage = document.getElementById(pageId);
-    if (contentPage) {
-        contentPage.style.display = 'block';
-        contentPage.classList.add('fade-in');
-        
-        if (pageId === 'page1') {
-            initAcademicSection();
-        } else if (pageId === 'page3') {
-            initInternationalSection(); // Add this line
-        } else {
-            initCarousel(contentPage);
+    function showText(textId) {
+        const textSections = document.querySelectorAll('.text-section');
+        textSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        const targetText = document.getElementById(textId);
+        if (targetText) {
+            targetText.classList.add('active');
         }
     }
-    saveProgress();
-}
 
-        function initCompassPage() {
-    const infoNodes = document.querySelectorAll('.info-node');
-    const nodeCarousels = document.querySelectorAll('.node-carousel');
-    
-    // Initialize carousels for each node
-    nodeCarousels.forEach(carousel => {
-        const slides = carousel.querySelectorAll('.carousel-slide');
-        let currentSlide = 0;
-        
-        if (slides.length > 1) {
-            // Auto-rotate carousel every 4 seconds
-            setInterval(() => {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add('active');
-            }, 4000);
-        }
-        
-        // Show first slide
-        if (slides.length > 0) {
-            slides[0].classList.add('active');
-        }
-    });
-    
-    // Add click handlers for nodes
-    infoNodes.forEach(node => {
-        node.addEventListener('click', function() {
-            // Add visual feedback when clicked
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
+    function showMapPage() {
+        welcomePage.style.display = 'none';
+        mapPage.style.display = 'block';
+        contentPages.forEach(page => {
+            page.style.display = 'none';
         });
-    });
-}
+        updateProgress();
+        saveProgress();
+    }
 
-        function showPointInfo(event) {
-            const point = event.currentTarget;
-            const info = point.querySelector('.point-info');
-            if (info) {
-                info.style.display = 'block';
+    function handlePointClick(event) {
+        const point = event.currentTarget;
+        const pageId = point.getAttribute('data-page');
+        
+        if (!point.id.startsWith('final')) {
+            completedPoints.add(point.id);
+            point.classList.add('completed');
+        }
+        
+        showContentPage(pageId);
+        updateProgress();
+        saveProgress();
+    }
+
+    function showPointInfo(event) {
+        const point = event.currentTarget;
+        const info = point.querySelector('.point-info');
+        if (info) {
+            info.style.display = 'block';
+        }
+    }
+
+    function hidePointInfo(event) {
+        const point = event.currentTarget;
+        const info = point.querySelector('.point-info');
+        if (info) {
+            info.style.display = 'none';
+        }
+    }
+
+    function updateProgress() {
+        const totalPoints = document.querySelectorAll('.interactive-point:not(#final-point)').length;
+        const completedCount = completedPoints.size;
+        progressText.textContent = `${completedCount}/${totalPoints} Шагов Пройдено`;
+        progressFill.style.width = `${(completedCount / totalPoints) * 100}%`;
+        if (completedCount >= totalPoints) {
+            finalPoint.style.display = 'flex';
+        }
+    }
+
+    // Academic Section Navigation
+    function initAcademicSection() {
+        const academicSection = document.getElementById('page1');
+        if (!academicSection) return;
+
+        const subpages = academicSection.querySelectorAll('.academic-subpage');
+        const prevBtn = academicSection.querySelector('.prev-section');
+        const nextBtn = academicSection.querySelector('.next-section');
+        const indicators = academicSection.querySelectorAll('.section-indicator');
+        
+        let currentSubpage = 0;
+
+        function showSubpage(index) {
+            subpages.forEach(page => page.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            subpages[index].classList.add('active');
+            indicators[index].classList.add('active');
+            initCarousel(subpages[index]);
+            currentSubpage = index;
+            prevBtn.style.opacity = index === 0 ? '0.5' : '1';
+            nextBtn.style.opacity = index === subpages.length - 1 ? '0.5' : '1';
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSubpage > 0) showSubpage(currentSubpage - 1);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSubpage < subpages.length - 1) showSubpage(currentSubpage + 1);
+        });
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => showSubpage(index));
+        });
+
+        showSubpage(0);
+    }
+
+    // Carousel functionality
+    function initAllCarousels() {
+        contentPages.forEach(page => {
+            initCarousel(page);
+        });
+    }
+
+    function initCarousel(container) {
+        const slides = container.querySelectorAll('.carousel-slide');
+        const indicatorsContainer = container.querySelector('.carousel-indicators');
+        const prevArrow = container.querySelector('.prev-arrow');
+        const nextArrow = container.querySelector('.next-arrow');
+        
+        if (slides.length === 0) return;
+        
+        let currentSlide = 0;
+
+        // Generate indicators
+        if (indicatorsContainer) {
+            indicatorsContainer.innerHTML = '';
+            for (let i = 0; i < slides.length; i++) {
+                const indicator = document.createElement('span');
+                indicator.className = 'indicator' + (i === 0 ? ' active' : '');
+                indicator.setAttribute('data-index', i);
+                indicatorsContainer.appendChild(indicator);
             }
         }
 
-        function hidePointInfo(event) {
-            const point = event.currentTarget;
-            const info = point.querySelector('.point-info');
-            if (info) {
-                info.style.display = 'none';
-            }
-        }
+        const indicators = container.querySelectorAll('.indicator');
 
-        function updateProgress() {
-            const totalPoints = document.querySelectorAll('.interactive-point:not(#final-point)').length;
-            const completedCount = completedPoints.size;
-            progressText.textContent = `${completedCount}/${totalPoints} Шагов Пройдено`;
-            progressFill.style.width = `${(completedCount / totalPoints) * 100}%`;
-            if (completedCount >= totalPoints) {
-                finalPoint.style.display = 'flex';
-            }
-        }
-
-        // Academic Section Navigation
-        function initAcademicSection() {
-            const academicSection = document.getElementById('page1');
-            if (!academicSection) return;
-
-            const subpages = academicSection.querySelectorAll('.academic-subpage');
-            const prevBtn = academicSection.querySelector('.prev-section');
-            const nextBtn = academicSection.querySelector('.next-section');
-            const indicators = academicSection.querySelectorAll('.section-indicator');
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
             
-            let currentSubpage = 0;
-
-            function showSubpage(index) {
-                subpages.forEach(page => page.classList.remove('active'));
-                indicators.forEach(indicator => indicator.classList.remove('active'));
-                subpages[index].classList.add('active');
-                indicators[index].classList.add('active');
-                initCarousel(subpages[index]);
-                currentSubpage = index;
-                prevBtn.style.opacity = index === 0 ? '0.5' : '1';
-                nextBtn.style.opacity = index === subpages.length - 1 ? '0.5' : '1';
-            }
-
-            prevBtn.addEventListener('click', () => {
-                if (currentSubpage > 0) showSubpage(currentSubpage - 1);
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (currentSubpage < subpages.length - 1) showSubpage(currentSubpage + 1);
-            });
-
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => showSubpage(index));
-            });
-
-            showSubpage(0);
+            slides[index].classList.add('active');
+            indicators[index].classList.add('active');
+            currentSlide = index;
         }
 
-        // Carousel functionality
-        function initAllCarousels() {
-            contentPages.forEach(page => {
-                initCarousel(page);
+        if (prevArrow) {
+            prevArrow.addEventListener('click', function() {
+                let newIndex = currentSlide - 1;
+                if (newIndex < 0) newIndex = slides.length - 1;
+                showSlide(newIndex);
             });
         }
 
-        function initCarousel(container) {
-            const slides = container.querySelectorAll('.carousel-slide');
-            const indicatorsContainer = container.querySelector('.carousel-indicators');
-            const prevArrow = container.querySelector('.prev-arrow');
-            const nextArrow = container.querySelector('.next-arrow');
-            
-            if (slides.length === 0) return;
-            
-            let currentSlide = 0;
+        if (nextArrow) {
+            nextArrow.addEventListener('click', function() {
+                let newIndex = currentSlide + 1;
+                if (newIndex >= slides.length) newIndex = 0;
+                showSlide(newIndex);
+            });
+        }
 
-            // Generate indicators
-            if (indicatorsContainer) {
-                indicatorsContainer.innerHTML = '';
-                for (let i = 0; i < slides.length; i++) {
-                    const indicator = document.createElement('span');
-                    indicator.className = 'indicator' + (i === 0 ? ' active' : '');
-                    indicator.setAttribute('data-index', i);
-                    indicatorsContainer.appendChild(indicator);
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => showSlide(index));
+        });
+        
+        showSlide(0);
+    }
+
+    // Progress persistence
+    function saveProgress() {
+        const progressData = {
+            completedPoints: Array.from(completedPoints),
+            currentPage: getCurrentPage(),
+            lastVisited: new Date().getTime()
+        };
+        localStorage.setItem('schoolPortfolioProgress', JSON.stringify(progressData));
+    }
+
+    function loadProgress() {
+        const saved = localStorage.getItem('schoolPortfolioProgress');
+        if (saved) {
+            try {
+                const progressData = JSON.parse(saved);
+                if (progressData.completedPoints) {
+                    completedPoints = new Set(progressData.completedPoints);
+                    progressData.completedPoints.forEach(pointId => {
+                        const point = document.getElementById(pointId);
+                        if (point) point.classList.add('completed');
+                    });
                 }
-            }
-
-            const indicators = container.querySelectorAll('.indicator');
-
-            function showSlide(index) {
-                slides.forEach(slide => slide.classList.remove('active'));
-                indicators.forEach(indicator => indicator.classList.remove('active'));
-                
-                slides[index].classList.add('active');
-                indicators[index].classList.add('active');
-                currentSlide = index;
-            }
-
-            if (prevArrow) {
-                prevArrow.addEventListener('click', function() {
-                    let newIndex = currentSlide - 1;
-                    if (newIndex < 0) newIndex = slides.length - 1;
-                    showSlide(newIndex);
-                });
-            }
-
-            if (nextArrow) {
-                nextArrow.addEventListener('click', function() {
-                    let newIndex = currentSlide + 1;
-                    if (newIndex >= slides.length) newIndex = 0;
-                    showSlide(newIndex);
-                });
-            }
-
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => showSlide(index));
-            });
-            
-            showSlide(0);
-        }
-
-        // Progress persistence
-        function saveProgress() {
-            const progressData = {
-                completedPoints: Array.from(completedPoints),
-                currentPage: getCurrentPage(),
-                lastVisited: new Date().getTime()
-            };
-            localStorage.setItem('schoolPortfolioProgress', JSON.stringify(progressData));
-        }
-
-        function loadProgress() {
-            const saved = localStorage.getItem('schoolPortfolioProgress');
-            if (saved) {
-                try {
-                    const progressData = JSON.parse(saved);
-                    if (progressData.completedPoints) {
-                        completedPoints = new Set(progressData.completedPoints);
-                        progressData.completedPoints.forEach(pointId => {
-                            const point = document.getElementById(pointId);
-                            if (point) point.classList.add('completed');
-                        });
-                    }
-                    updateProgress();
-                    if (progressData.currentPage && progressData.currentPage !== 'welcome') {
-                        showPageFromRefresh(progressData.currentPage);
-                        return true;
-                    }
-                } catch (e) {
-                    clearProgress();
+                updateProgress();
+                if (progressData.currentPage && progressData.currentPage !== 'welcome') {
+                    showPageFromRefresh(progressData.currentPage);
+                    return true;
                 }
-            }
-            return false;
-        }
-
-        function getCurrentPage() {
-            if (welcomePage.style.display !== 'none') return 'welcome';
-            if (mapPage.style.display !== 'none') return 'map';
-            const visiblePage = Array.from(contentPages).find(page => 
-                page.style.display !== 'none' && page.style.display !== ''
-            );
-            return visiblePage ? visiblePage.id : 'welcome';
-        }
-
-        function showPageFromRefresh(pageId) {
-            if (pageId === 'map') {
-                showMapPage();
-            } else if (pageId.startsWith('page') || pageId === 'final-page' || pageId === 'page1') {
-                showMapPage();
-                setTimeout(() => {
-                    showContentPage(pageId);
-                }, 100);
+            } catch (e) {
+                clearProgress();
             }
         }
+        return false;
+    }
 
-        function clearProgress() {
-            localStorage.removeItem('schoolPortfolioProgress');
-            completedPoints.clear();
+    function getCurrentPage() {
+        if (welcomePage.style.display !== 'none') return 'welcome';
+        if (mapPage.style.display !== 'none') return 'map';
+        const visiblePage = Array.from(contentPages).find(page => 
+            page.style.display !== 'none' && page.style.display !== ''
+        );
+        return visiblePage ? visiblePage.id : 'welcome';
+    }
+
+    function showPageFromRefresh(pageId) {
+        if (pageId === 'map') {
+            showMapPage();
+        } else if (pageId.startsWith('page') || pageId === 'final-page' || pageId === 'page1') {
+            showMapPage();
+            setTimeout(() => {
+                showContentPage(pageId);
+            }, 100);
         }
+    }
 
-        function restartExperience() {
-            clearProgress();
-            location.reload();
-        }
+    function clearProgress() {
+        localStorage.removeItem('schoolPortfolioProgress');
+        completedPoints.clear();
+    }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    function restartExperience() {
+        clearProgress();
+        location.reload();
+    }
+
+    // Remove the duplicate auto-play code at the bottom
+    // Initialize
+    document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>

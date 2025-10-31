@@ -2152,9 +2152,10 @@
             style="width: 100%; height: 100%; object-fit: cover;" 
             playsinline
             muted
+            preload="none"
+            data-src="footage/IMG_7776.MOV" <!-- Use data attribute -->
         >
-            <source src="footage/IMG_7776.MOV" type="video/mp4">
-            Your browser does not support the video tag.
+            <!-- Remove source tag initially -->
         </video>
         <!-- Play button overlay -->
         <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; cursor: pointer; background: rgba(0,0,0,0.7); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
@@ -2283,25 +2284,43 @@ function restartExperience() {
     }
 
     // Call this function when showing the final page
-    function showContentPage(pageId) {
-        mapPage.style.display = 'none';
-        const contentPage = document.getElementById(pageId);
-        if (contentPage) {
-            contentPage.style.display = 'block';
-            contentPage.classList.add('fade-in');
-            
-            if (pageId === 'page1') {
-                initAcademicSection();
-            } else if (pageId === 'page3') {
-                initInternationalSection();
-            } else if (pageId === 'final-page') {
-                initFinalVideo(); // Initialize final video when page loads
-            } else {
-                initCarousel(contentPage);
-            }
+    // Update the showContentPage function
+function showContentPage(pageId) {
+    mapPage.style.display = 'none';
+    const contentPage = document.getElementById(pageId);
+    if (contentPage) {
+        contentPage.style.display = 'block';
+        contentPage.classList.add('fade-in');
+        
+        if (pageId === 'page1') {
+            initAcademicSection();
+        } else if (pageId === 'page3') {
+            initInternationalSection();
+        } else if (pageId === 'final-page') {
+            loadAndInitFinalVideo(); // Load video only when page is shown
+        } else {
+            initCarousel(contentPage);
         }
-        saveProgress();
     }
+    saveProgress();
+}
+
+// New function to load final video only when needed
+function loadAndInitFinalVideo() {
+    const finalVideo = document.getElementById('final-video');
+    const playOverlay = document.querySelector('.play-button-overlay');
+    
+    // Only load the video source if it hasn't been loaded yet
+    if (!finalVideo.querySelector('source')) {
+        const source = document.createElement('source');
+        source.src = finalVideo.getAttribute('data-src');
+        source.type = 'video/mp4';
+        finalVideo.appendChild(source);
+        finalVideo.load(); // Load the video
+    }
+    
+    initFinalVideo(); // Your existing initialization
+}
 
     function startVideo() {
         if (videoStarted) return;

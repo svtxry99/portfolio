@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Welcome Page */
+        #welcome-page {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+            
+        .media-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background: #000;
+        }
+
+        .media-container.active {
+            opacity: 1;
+        }
+
+        .media-container video,
+        .media-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #photo4-container {
+            background: #f8f9fa !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+        }
+
+        .vertical-photo {
+            width: auto !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+            object-position: center !important;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 15;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background-color: white;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .play-button::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-left: 20px solid #2c3e50;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+        }
+
+       .welcome-content {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    width: fit-content; /* Auto-adjusts to content */
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    max-width: 800px; /* Still has a maximum */
+}
+        .welcome-content.active {
+            opacity: 1;
+        }
+
+        .text-section {
+            display: none;
+        }
+
+        .text-section.active {
+            display: block;
+        }
+
+       /* Photo4 Text - Proper Line Breaks */
+#photo4-text h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    display: block; /* Changed from inline to block */
+}
+
+#photo4-text p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    line-height: 1.3;
+    font-weight: 300;
+    letter-spacing: 0.1px;
+    opacity: 0.9;
+    display: block; /* Changed from inline to block */
+}
+        #slideshow-text h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        #slideshow-text p {
+            font-size: 1.2rem;
+        }
+
+        /* Map Page */
+        #map-page {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: none;
+            background: #f0f0f0;
+        }
+
+        .map-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+        }
+
+        .map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .interactive-point {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            z-index: 20;
+            border: 3px solid white;
+        }
+
+        .interactive-point:hover {
+            transform: scale(1.3);
+            background-color: #c0392b;
+        }
+
+        .interactive-point::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 18px solid #e74c3c;
+            bottom: -18px;
+            left: 13px;
+        }
+
+        .interactive-point.completed {
+            background-color: #27ae60;
+        }
+
+        .interactive-point.completed::after {
+            border-top-color: #27ae60;
+        }
+
+        .point-info {
+            position: absolute;
+            background-color: white;
+            padding: 0.6rem 0.8rem;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            max-width: 180px;
+            width: max-content;
+            display: none;
+            z-index: 30;
+            bottom: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .point-info h3 {
+            margin-bottom: 0.3rem;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .point-info p {
+            margin-bottom: 0;
+            color: #666;
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+
+        .map-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            z-index: 25;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-header h2 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #27ae60;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        #final-point {
+            display: none;
+            background-color: #f39c12;
+        }
+
+        #final-point::after {
+            border-top-color: #f39c12;
+        }
+
+        /* Content Pages */
+        .content-page {
+            min-height: 100vh;
+            display: none;
+            background-color: white;
+        }
+
+        .hero-section {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+
+        .hero-image {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: white;
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            padding: 3rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 60vh;
+        }
+
+        .content-text {
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            align-self: start;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .text-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .text-content.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .text-content h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 0.5rem;
+        }
+
+        .text-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .image-carousel {
+            position: relative;
+            background: #fff;
+            border-radius: 10px;
+            padding: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            height: fit-content;
+        }
+
+        .carousel-container {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* This shows the whole image */
+    background: #f8f9fa; /* Add background for empty space */
+}
+
+        .photo-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            padding: 2rem 1.5rem 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .carousel-arrow {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-arrow:hover {
+            background: #1a252f;
+            transform: scale(1.1);
+        }
+
+       .carousel-indicators {
+    display: flex;
+    gap: 0.3rem;
+    max-width: 120px; /* Show about 10 dots at a time */
+    overflow-x: auto;
+    padding: 5px;
+    scrollbar-width: none; /* Hide scrollbar */
+    -ms-overflow-style: none; /* Hide scrollbar in IE */
+}
+
+.carousel-indicators::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Webkit */
+}
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #bdc3c7;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.indicator.active {
+    background: #2c3e50;
+    transform: scale(1.2);
+}
+        .navigation-buttons {
+    display: flex;
+    justify-content: center; /* Center the button */
+    margin: 2rem auto;
+    padding: 0 2rem;
+    max-width: 1400px;
+}
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #1a252f;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Academic Section with Sub-pages */
+        .academic-subpage {
+            display: none;
+        }
+
+        .academic-subpage.active {
+            display: block;
+        }
+
+        .section-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            max-width: 1400px;
+        }
+
+        .section-indicators {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .section-indicator {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .section-indicator.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .nav-btn {
+            background: #34495e;
+            padding: 0.6rem 1.2rem;
+        }
+
+        .nav-btn:hover {
+            background: #2c3e50;
+        }
+
+        /* Final Page */
+        #final-page .content-body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        #final-page .content-text {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .carousel-container {
+                height: 400px;
+            }
+            
+            .content-text {
+                padding: 1.5rem;
+                min-height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 40vh;
+            }
+            
+            .split-layout {
+                padding: 2rem 1rem;
+            }
+            
+            .carousel-container {
+                height: 350px;
+            }
+            
+            .welcome-content {
+                max-width: 95%;
+                min-width: auto;
+                top: 85%;
+                padding: 1rem;
+            }
+            
+            #photo4-text h1,
+            #photo4-text p {
+                display: block;
+            }
+            /* Grid Item Hover Effects */
+.grid-item:hover {
+    transform: translateY(-10px);
+}
+
+.grid-item:hover .grid-image img {
+    transform: scale(1.1);
+}
+
+/* Responsive adjustments for the grid */
+@media (max-width: 768px) {
+    .experience-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .grid-header h2 {
+        font-size: 2rem;
+    }
+    
+    .grid-header p {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+    
+    .experience-summary {
+        padding: 2rem 1rem;
+        margin: 1rem;
+    }
+    
+    .experience-summary h3 {
+        font-size: 1.6rem;
+    }
+    
+    .experience-summary p {
+        font-size: 1.1rem;
+    }
+}
+/* Atomic Animations */
+@keyframes orbit {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes float {
+    from { transform: translate(0, 0); }
+    to { transform: translate(-100px, -100px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Hover effects for atomic elements */
+.atomic-element {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.atomic-element:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.atomic-element:hover .element-icon {
+    animation: pulse 1s ease;
+}
+
+/* Photo hover effects */
+.photo-item {
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-item:hover {
+    transform: scale(1.05);
+}
+
+.photo-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(102, 126, 234, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.photo-item:hover::before {
+    opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 968px) {
+    .atomic-elements {
+        grid-template-columns: 1fr;
+    }
+    
+    .reaction-visualization {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .element-photos {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .atomic-core {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .hero-section {
+        padding: 3rem 1rem;
+    }
+    
+    .atomic-orbit {
+        display: none;
+    }
+}
+/* Animation for grid items */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.grid-item {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Stagger the animations for grid items */
+.grid-item:nth-child(1) { animation-delay: 0.1s; }
+.grid-item:nth-child(2) { animation-delay: 0.2s; }
+.grid-item:nth-child(3) { animation-delay: 0.3s; }
+.grid-item:nth-child(4) { animation-delay: 0.4s; }
+.grid-item:nth-child(5) { animation-delay: 0.5s; }
+.grid-item:nth-child(6) { animation-delay: 0.6s; }
+.grid-item:nth-child(7) { animation-delay: 0.7s; }
+.grid-item:nth-child(8) { animation-delay: 0.8s; }
+.grid-item:nth-child(9) { animation-delay: 0.9s; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Page -->
+    <section id="welcome-page">
+        <div class="media-container active" id="video-container">
+            <video id="welcome-video" muted playsinline>
+                <source src="footage/заставка.mov" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="play-button" id="play-button"></div>
+        </div>
+        
+        <div class="media-container" id="photo4-container">
+            <img src="footage/introLS.JPG" alt="School Entrance" class="vertical-photo">
+        </div>
+        
+        <div class="media-container" id="photo1-container">
+            <img src="footage/интро_1.jpg" alt="School Building">
+        </div>
+        
+        <div class="media-container" id="photo2-container">
+            <img src="footage/интро_2.png" alt="Classroom">
+        </div>
+        
+        <div class="media-container" id="photo3-container">
+            <img src="footage/карта.jpg" alt="School Aerial View">
+        </div>
+        
+        <div class="welcome-content" id="welcome-message">
+            <div class="text-section active" id="photo4-text">
+                <h1>Людмила Станиславовна Сосновская</h1>
+                <p>Директор государственного учреждения образования</p>
+                <p>"Средняя школа №3 г. Островца"</p>
+                <p>Образование: Высшее</p>
+                <p>Общий педагогический стаж: <strong>31 год </strong></p>
+                <p>Стаж работы в руководящей должности: <strong>12 лет</strong></p>
+                 <p> Стаж работы в роли руководителя Средней школы №3 г. Островца: <strong>6 лет</strong></p>
+            </div>
+            
+            <div class="text-section" id="slideshow-text">
+                 <h1>Маршрут успеха </h1>
+                <p>От точки "А" к точке "Будущее"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Page -->
+    <section id="map-page">
+        <div class="map-header">
+            <h2>Маршрут успеха</h2>
+            <div class="progress-container">
+                <span id="progress-text">0/7 Шагов Пройдено</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                 <button class="btn reset-progress-btn" style="margin-left: 1rem;">
+                Сбросить прогресс
+            </button>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <img src="footage/карта.jpg" alt="School Aerial View" class="map-image">
+            
+            <!-- Interactive Points -->
+            <div class="interactive-point" id="point1" style="top: 30%; left: 20%;" data-page="page1">
+                <span>1</span>
+                <div class="point-info">
+                    <h3>Точка "А" - старт</h3>
+                </div>
+            </div>
+            
+            <div class="interactive-point" id="point2" style="top: 40%; left: 40%;" data-page="page2">
+                <span>4</span>
+                <div class="point-info">
+                    <h3>"Внедорожный опыт"</h3>
+                </div>
+            </div>
+            
+            <div class="interactive-point" id="point3" style="top: 60%; left: 30%;" data-page="page3">
+                <span>3</span>
+                <div class="point-info">
+                    <h3>Международный маршрут</h3>
+                </div>
+            </div>
+            
+            <div class="interactive-point" id="point4" style="top: 50%; left: 60%;" data-page="page4">
+                <span>2</span>
+                <div class="point-info">
+                    <h3>Турбо-режим</h3>
+                </div>
+            </div>
+            
+            <div class="interactive-point" id="point5" style="top: 70%; left: 50%;" data-page="page5">
+                <span>5</span>
+                <div class="point-info">
+                    <h3>Мои управленческие технологии</h3>
+                </div>
+            </div>
+            
+            <div class="interactive-point" id="point6" style="top: 35%; left: 70%;" data-page="page6">
+                <span>6</span>
+                <div class="point-info">
+                    <h3>Атомная энергия</h3>
+                </div>
+            </div>
+            
+            <div class="interactive-point" id="point7" style="top: 55%; left: 80%;" data-page="page7">
+                <span>7</span>
+                <div class="point-info">
+                    <h3>Учимся вместе - растем как личность </h3>
+                </div>
+            </div>
+            
+            <!-- Final Point (appears after all others are completed) -->
+            <div class="interactive-point" id="final-point" style="top: 45%; left: 50%;" data-page="final-page">
+                <span>★</span>
+                <div class="point-info">
+                    <h3>Будущее</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academic Section with 3 Sub-pages -->
+    <section id="page1" class="content-page">
+        <!-- One Hero Image for all pages -->
+        <div class="hero-section">
+            <img src="footage/sect1.png" alt="Academic Excellence" class="hero-image">
+        </div>
+
+        <!-- Page 1-1: Academic Programs -->
+       <!-- Page 1-1: Academic Programs - Updated for 50 photos -->
+<div class="academic-subpage active" id="academic-page1">
+    <div class="content-body split-layout">
+        <div class="content-text">
+            <div class="text-content active">
+                <h3 style="text-align: center;">Точка "А" - старт</h3>
+                <p style="text-align: left;">Любой успешный маршрут начинается с точных координат. </p>
+                <p style="text-align: left;">С первого дня мы определили наш "истинный север" - бескомпромиссное <strong> качество </strong> образования.</p>
+                <!-- This text will stay the same for all 50 photos -->
+            </div>
+        </div>
+        
+        <div class="image-carousel">
+            <div class="carousel-container">
+                <div class="carousel-slide active" data-index="0">
+                    <img src="международные/1.jpg" alt="Photo 1">
+                </div>
+                <div class="carousel-slide" data-index="1">
+                    <img src="международные/2.jpg" alt="Photo 2">
+                </div>
+                <div class="carousel-slide" data-index="2">
+    <img src="международные/3.jpg" alt="Photo 3">
+</div>
+
+<div class="carousel-slide" data-index="3">
+    <img src="международные/4.jpg" alt="Photo 4">
+</div>
+
+<div class="carousel-slide" data-index="4">
+    <img src="международные/5.jpg" alt="Photo 5">
+</div>
+
+<div class="carousel-slide" data-index="5">
+    <img src="международные/6.jpg" alt="Photo 6">
+</div>
+
+<div class="carousel-slide" data-index="6">
+    <img src="международные/7.jpg" alt="Photo 7">
+</div>
+
+<div class="carousel-slide" data-index="7">
+    <img src="международные/8.jpg" alt="Photo 8">
+</div>
+
+<div class="carousel-slide" data-index="8">
+    <img src="международные/9.jpg" alt="Photo 9">
+</div>
+
+<div class="carousel-slide" data-index="9">
+    <img src="международные/10.png" alt="Photo 10">
+</div>
+
+<div class="carousel-slide" data-index="10">
+    <img src="международные/11.jpg" alt="Photo 11">
+</div>
+
+<div class="carousel-slide" data-index="11">
+    <img src="международные/12.jpg" alt="Photo 12">
+</div>
+
+<div class="carousel-slide" data-index="12">
+    <img src="международные/13.jpg" alt="Photo 13">
+</div>
+
+<div class="carousel-slide" data-index="13">
+    <img src="международные/14.jpg" alt="Photo 14">
+</div>
+
+<div class="carousel-slide" data-index="14">
+    <img src="международные/15.jpg" alt="Photo 15">
+</div>
+
+<div class="carousel-slide" data-index="15">
+    <img src="международные/16.jpg" alt="Photo 16">
+</div>
+
+<div class="carousel-slide" data-index="16">
+    <img src="международные/17.jpg" alt="Photo 17">
+</div>
+
+<div class="carousel-slide" data-index="17">
+    <img src="международные/18.jpg" alt="Photo 18">
+</div>
+
+<div class="carousel-slide" data-index="18">
+    <img src="международные/19.jpg" alt="Photo 19">
+</div>
+
+<div class="carousel-slide" data-index="19">
+    <img src="республиканские/162 .jpg" alt="Photo 20">
+</div>
+<div class="carousel-slide" data-index="20">
+    <img src="республиканские/166 .jpg" alt="Photo 21">
+</div>
+<div class="carousel-slide" data-index="21">
+    <img src="республиканские/24 .jpg" alt="Photo 22">
+</div>
+<div class="carousel-slide" data-index="22">
+    <img src="республиканские/131 -1.jpg" alt="Photo 23">
+</div>
+<div class="carousel-slide" data-index="23">
+    <img src="областные/1.jpg" alt="Photo 24">
+</div>
+
+<div class="carousel-slide" data-index="24">
+    <img src="областные/2.jpg" alt="Photo 25">
+</div>
+
+<div class="carousel-slide" data-index="25">
+    <img src="областные/3.jpg" alt="Photo 26">
+</div>
+
+<div class="carousel-slide" data-index="26">
+    <img src="областные/4.jpg" alt="Photo 27">
+</div>
+
+<div class="carousel-slide" data-index="27">
+    <img src="областные/5.jpg" alt="Photo 28">
+</div>
+
+<div class="carousel-slide" data-index="28">
+    <img src="областные/6.jpg" alt="Photo 29">
+</div>
+
+<div class="carousel-slide" data-index="29">
+    <img src="областные/7.jpg" alt="Photo 30">
+</div>
+
+<div class="carousel-slide" data-index="30">
+    <img src="областные/8.jpg" alt="Photo 31">
+</div>
+
+<div class="carousel-slide" data-index="31">
+    <img src="областные/9.jpg" alt="Photo 32">
+</div>
+
+<div class="carousel-slide" data-index="32">
+    <img src="областные/10.jpg" alt="Photo 33">
+</div>
+
+<div class="carousel-slide" data-index="33">
+    <img src="областные/11.jpg" alt="Photo 34">
+</div>
+
+<div class="carousel-slide" data-index="34">
+    <img src="областные/12.jpg" alt="Photo 35">
+</div>
+
+<div class="carousel-slide" data-index="35">
+    <img src="областные/13.jpg" alt="Photo 36">
+</div>
+
+                <div class="carousel-slide" data-index="36">
+    <img src="районные/25 .jpg" alt="Photo 37">
+</div>
+
+<div class="carousel-slide" data-index="37">
+    <img src="районные/26 .jpg" alt="Photo 38">
+</div>
+
+<div class="carousel-slide" data-index="38">
+    <img src="районные/27 .jpg" alt="Photo 39">
+</div>
+
+<div class="carousel-slide" data-index="39">
+    <img src="районные/28 .jpg" alt="Photo 40">
+</div>
+
+<div class="carousel-slide" data-index="40">
+    <img src="районные/29 .jpg" alt="Photo 41">
+</div>
+
+<div class="carousel-slide" data-index="41">
+    <img src="районные/30 .jpg" alt="Photo 42">
+</div>
+
+<div class="carousel-slide" data-index="42">
+    <img src="районные/31 .jpg" alt="Photo 43">
+</div>
+
+<div class="carousel-slide" data-index="43">
+    <img src="районные/32 .jpg" alt="Photo 44">
+</div>
+
+<div class="carousel-slide" data-index="44">
+    <img src="районные/33 .jpg" alt="Photo 45">
+</div>
+
+<div class="carousel-slide" data-index="45">
+    <img src="районные/34 .jpg" alt="Photo 46">
+</div>
+
+<div class="carousel-slide" data-index="46">
+    <img src="районные/35 .jpg" alt="Photo 47">
+</div>
+
+<div class="carousel-slide" data-index="47">
+    <img src="районные/36 .jpg" alt="Photo 48">
+</div>
+
+<div class="carousel-slide" data-index="48">
+    <img src="районные/37 .jpg" alt="Photo 49">
+</div>
+
+<div class="carousel-slide" data-index="49">
+    <img src="районные/38 .jpg" alt="Photo 50">
+</div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-arrow prev-arrow">&#10094;</button>
+                <div class="carousel-indicators">
+                    <!-- Indicators will be generated by JavaScript -->
+                </div>
+                <button class="carousel-arrow next-arrow">&#10095;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Page 1-2: Teaching Excellence -->
+        <div class="academic-subpage" id="academic-page2">
+            <div class="content-body split-layout">
+                <div class="content-text">
+                    <div class="text-content active" data-index="0">
+                        <h3 style="text-align: center;">Точка "А" - старт</h3>
+                <p style="text-align: left;">Любой успешный маршрут начинается с точных координат. </p>
+                <p style="text-align: left;">С первого дня мы определили наш "истинный север" - бескомпромиссное <strong> качество </strong> образования.</p>
+                    </div>
+                    
+                </div>
+                
+                <div class="image-carousel">
+                    <div class="carousel-container">
+                        <div class="carousel-slide active" data-index="0">
+                            <img src="качество/1_.png">
+                        </div>
+                        <div class="carousel-slide" data-index="1">
+                            <img src="качество/2_.png" alt="Teaching">
+                        </div>
+                        <div class="carousel-slide" data-index="2">
+    <img src="качество/3_.png" alt="Teaching">
+</div>
+
+<div class="carousel-slide" data-index="3">
+    <img src="качество/4_.png" alt="Teaching">
+</div>
+
+<div class="carousel-slide" data-index="4">
+    <img src="качество/5_.png" alt="Teaching">
+</div>
+
+<div class="carousel-slide" data-index="5">
+    <img src="качество/6_.png" alt="Teaching">
+</div>
+
+<div class="carousel-slide" data-index="6">
+    <img src="качество/7_.png" alt="Teaching">
+</div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-arrow prev-arrow">&#10094;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-index="0"></span>
+                            <span class="indicator" data-index="1"></span>
+                        </div>
+                        <button class="carousel-arrow next-arrow">&#10095;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 1-3: Student Achievements -->
+        <div class="academic-subpage" id="academic-page3">
+            <div class="content-body split-layout">
+                <div class="content-text">
+                    <div class="text-content active" data-index="0">
+                        <h3 style="text-align: center;">Точка "А" - старт</h3>
+                <p style="text-align: left;">Любой успешный маршрут начинается с точных координат. </p>
+                <p style="text-align: left;">С первого дня мы определили наш "истинный север" - бескомпромиссное <strong> качество </strong> образования.</p>
+                    </div>
+                    <div class="text-content" data-index="1">
+                        <h3>Graduate Success</h3>
+                        <p>Alumni achievements and university placements.</p>
+                        <p>Career pathways and professional development.</p>
+                    </div>
+                </div>
+                
+                <div class="image-carousel">
+                    <div class="carousel-container">
+                       <div class="carousel-slide active" data-index="0">
+    <img src="дипломыЛС/1_.jpg">
+</div>
+<div class="carousel-slide" data-index="1">
+    <img src="дипломыЛС/2_.jpg">
+</div>
+<div class="carousel-slide" data-index="2">
+    <img src="дипломыЛС/3_.jpg">
+</div>
+<div class="carousel-slide" data-index="3">
+    <img src="дипломыЛС/4_.jpg">
+</div>
+<div class="carousel-slide" data-index="4">
+    <img src="дипломыЛС/5_.jpg">
+</div>
+<div class="carousel-slide" data-index="5">
+    <img src="дипломыЛС/6_.jpg">
+</div>
+<div class="carousel-slide" data-index="6">
+    <img src="дипломыЛС/7_.jpg">
+</div>
+<div class="carousel-slide" data-index="7">
+    <img src="дипломыЛС/8_.jpg">
+</div>
+<div class="carousel-slide" data-index="8">
+    <img src="дипломыЛС/9_.jpg">
+</div>
+<div class="carousel-slide" data-index="9">
+    <img src="дипломыЛС/10_.jpg">
+</div>
+<div class="carousel-slide" data-index="10">
+    <img src="дипломыЛС/11_.jpg">
+</div>
+<div class="carousel-slide" data-index="11">
+    <img src="дипломыЛС/12_.jpg">
+</div>
+<div class="carousel-slide" data-index="12">
+    <img src="дипломыЛС/13_.jpg">
+</div>
+<div class="carousel-slide" data-index="13">
+    <img src="дипломыЛС/14_.jpg">
+</div>
+<div class="carousel-slide" data-index="14">
+    <img src="дипломыЛС/15_.jpg">
+</div>
+<div class="carousel-slide" data-index="15">
+    <img src="дипломыЛС/16_.jpg">
+</div>
+<div class="carousel-slide" data-index="16">
+    <img src="дипломыЛС/17_.jpg">
+</div>
+<div class="carousel-slide" data-index="17">
+    <img src="дипломыЛС/18_.jpg">
+</div>
+<div class="carousel-slide" data-index="18">
+    <img src="дипломыЛС/19_.jpg">
+</div>
+<div class="carousel-slide" data-index="19">
+    <img src="дипломыЛС/20_.jpg">
+</div>
+<div class="carousel-slide" data-index="20">
+    <img src="дипломыЛС/21_.jpg">
+</div>
+<div class="carousel-slide" data-index="21">
+    <img src="дипломыЛС/22_.jpg">
+</div>
+<div class="carousel-slide" data-index="22">
+    <img src="дипломыЛС/23_.jpg">
+</div>
+<div class="carousel-slide" data-index="23">
+    <img src="дипломыЛС/24_.jpg">
+</div>
+<div class="carousel-slide" data-index="24">
+    <img src="дипломыЛС/25_.jpg">
+</div>
+<div class="carousel-slide" data-index="25">
+    <img src="дипломыЛС/26_.jpg">
+</div>
+<div class="carousel-slide" data-index="26">
+    <img src="дипломыЛС/27_.jpg">
+</div>
+<div class="carousel-slide" data-index="27">
+    <img src="дипломыЛС/28_.jpg">
+</div>
+<div class="carousel-slide" data-index="28">
+    <img src="дипломыЛС/29_.jpg">
+</div>
+<div class="carousel-slide" data-index="29">
+    <img src="дипломыЛС/30_.jpg">
+</div>
+<div class="carousel-slide" data-index="30">
+    <img src="дипломыЛС/31_.jpg">
+</div>
+<div class="carousel-slide" data-index="31">
+    <img src="дипломыЛС/32_.jpg">
+</div>
+<div class="carousel-slide" data-index="32">
+    <img src="дипломыЛС/33_.jpg">
+</div>
+<div class="carousel-slide" data-index="33">
+    <img src="дипломыЛС/34_.jpg">
+</div>
+<div class="carousel-slide" data-index="34">
+    <img src="дипломыЛС/35_.jpg">
+</div>
+<div class="carousel-slide" data-index="35">
+    <img src="дипломыЛС/36_.jpg">
+</div>
+<div class="carousel-slide" data-index="36">
+    <img src="дипломыЛС/37_.jpg">
+</div>
+                    </div>
+                    <div class="carousel-controls">
+                        <button class="carousel-arrow prev-arrow">&#10094;</button>
+                        <div class="carousel-indicators">
+                            <span class="indicator active" data-index="0"></span>
+                            <span class="indicator" data-index="1"></span>
+                        </div>
+                        <button class="carousel-arrow next-arrow">&#10095;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Navigation -->
+        <div class="section-navigation">
+            <button class="btn nav-btn prev-section">‹ Назад</button>
+            <div class="section-indicators">
+                <span class="section-indicator active" data-section="1">Достижения</span>
+                <span class="section-indicator" data-section="2">Качество</span>
+                <span class="section-indicator" data-section="3">Компетентность</span>
+            </div>
+            <button class="btn nav-btn next-section">Далее ›</button>
+        </div>
+
+        <!-- Main Navigation -->
+        <div class="navigation-buttons">
+            <button class="btn back-to-map">Вернуться к карте</button>
+        </div>
+    </section>
+          <!-- Page 4: Турбо-режим -->
+    <section id="page4" class="content-page">
+        <!-- Hero Section with Video -->
+        <div class="hero-section" style="justify-content: center; align-items: center;">
+            <video style="width: 80%; height: 80%; object-fit: contain;" autoplay muted loop playsinline>
+                <source src="footage/IMG_7676.MOV" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- Single Page Layout -->
+        <div class="content-body split-layout">
+            <div class="content-text">
+                <div class="text-content active">
+                    <h3 style="text-align: center;">Турбо-режим</h3>
+                    <p style="text-align: left;">Чтобы совершить рывок, иногда нужно включить турбо-режим.</p>
+                    <p style="text-align: left;">Атомкласс стал для нас именно таким ускорителем. Это не просто поворот, а выход на скоростную магистраль передовых технологий и фундаментальной науки. Мы обогнали многих, кто ехал по накатанной колее.</p>
+                </div>
+            </div>
+            
+            <div class="image-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active" data-index="0">
+    <img src="атомкласс/1_.jpg" alt="Турбо-режим 1">
+</div>
+<div class="carousel-slide" data-index="1">
+    <img src="атомкласс/2_.webp" alt="Турбо-режим 2">
+</div>
+<div class="carousel-slide" data-index="2">
+    <img src="атомкласс/3_.jpg" alt="Турбо-режим 3">
+</div>
+<div class="carousel-slide" data-index="3">
+    <img src="атомкласс/4_.jpg" alt="Турбо-режим 4">
+</div>
+<div class="carousel-slide" data-index="4">
+    <img src="атомкласс/5_.jpg" alt="Турбо-режим 5">
+</div>
+<div class="carousel-slide" data-index="5">
+    <img src="атомкласс/6_.jpg" alt="Турбо-режим 6">
+</div>
+<div class="carousel-slide" data-index="6">
+    <img src="атомкласс/7_.jpg" alt="Турбо-режим 7">
+</div>
+<div class="carousel-slide" data-index="7">
+    <img src="атомкласс/8_.jpg" alt="Турбо-режим 8">
+</div>
+<div class="carousel-slide" data-index="8">
+    <img src="атомкласс/9_.jpg" alt="Турбо-режим 9">
+</div>
+<div class="carousel-slide" data-index="9">
+    <img src="атомкласс/10_.jpg" alt="Турбо-режим 10">
+</div>
+<div class="carousel-slide" data-index="10">
+    <img src="атомкласс/11_.jpg" alt="Турбо-режим 11">
+</div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-arrow prev-arrow">&#10094;</button>
+                    <div class="carousel-indicators">
+                        <!-- Indicators will be generated by JavaScript -->
+                    </div>
+                    <button class="carousel-arrow next-arrow">&#10095;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons">
+            <button class="btn back-to-map">Вернуться к карте</button>
+        </div>
+    </section>
+
+      <!-- Page 3: Международный маршрут -->
+<section id="page3" class="content-page">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <img src="footage/photo_2025-10-31_08-11-30.jpg" alt="Международный маршрут" class="hero-image" style=" 
+            width: 80%;
+            height: 80%;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: white;
+        ">
+        
+    </div>
+
+    <!-- International Section with 3 Sub-pages -->
+    <div class="academic-subpage active" id="international-page1">
+        <div class="content-body split-layout">
+            <div class="content-text">
+                <div class="text-content active">
+                    <h3 style="text-align: center;">Международный маршрут</h3>
+                    <p style="text-align: left;">Современная школа не может двигаться по одному шоссе. Мы вышли на сложный перекресток межкультурной коммуникации.</p>
+                    <p style="text-align: left;">Мой навык как навигатора - быстро перестраивать "логистику", находить общий язык и строить новые мосты, не сбиваясь с основного курса. </p>
+                </div>
+            </div>
+            
+            <div class="image-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active" data-index="0">
+                        <img src="др/4_.jpg" alt="Международное сотрудничество 1">
+                                                    <div class="photo-name">День рождения Атомкласса. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="1">
+                        <img src="др/2_.jpg" alt="Международное сотрудничество 2">
+                                                                            <div class="photo-name">День рождения Атомкласса. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="2">
+                        <img src="др/3_.jpg" alt="Международное сотрудничество 3">
+                                                                            <div class="photo-name">День рождения Атомкласса. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="3">
+                        <img src="др/1_.jpg" alt="Международное сотрудничество 4">
+                                                                            <div class="photo-name">День рождения Атомкласса. 2025 год</div>
+
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-arrow prev-arrow">&#10094;</button>
+                    <div class="carousel-indicators">
+                        <!-- Indicators will be generated by JavaScript -->
+                    </div>
+                    <button class="carousel-arrow next-arrow">&#10095;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3-3: Global Impact -->
+    <div class="academic-subpage" id="international-page2">
+        <div class="content-body split-layout">
+            <div class="content-text">
+                <div class="text-content active">
+                    <h3 style="text-align: center;">Международный маршрут</h3>
+                    <p style="text-align: left;">Островецкий район с официальным визитом посетила делегация города Цюнхай провинции Хайнань Китайской Народной Республики. </p>
+                    <p style="text-align: left;">Делегация посетила Среднюю школу №3, где организовано изучение китайского языка. В учреждении работают два педагога, которые знакомят детей с традициями и культурой Китая, учат их языку и особенностям общения. </p>
+                    <p style="text-align: left;">Сохранение традиционной белорусской культуры и истории, память о Великой Отечественной войне, военно-патриотическое воспитание – с этими направлениями педагоги и дети тоже познакомили гостей.</p>
+                </div>
+            </div>
+            
+            <div class="image-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active" data-index="0">
+                        <img src="сотруднич/1_.jpg" alt="Глобальное влияние 1">
+                                                                                                    <div class="photo-name">Визит делегации из г.Цюнхай. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="1">
+                        <img src="сотруднич/2_.jpg" alt="Глобальное влияние 2">
+                                                                                                                            <div class="photo-name">Визит делегации из г.Цюнхай. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="2">
+                        <img src="сотруднич/3_.webp" alt="Глобальное влияние 3">
+                                                                                                                            <div class="photo-name">Визит делегации из г.Цюнхай. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="3">
+                        <img src="кабкитай/1_.jpeg" alt="Глобальное влияние 4">
+                                                                                                                            <div class="photo-name">Изучение китайского языка. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="4">
+                        <img src="кабкитай/2_.jpeg" alt="Глобальное влияние 5">
+                                                                                                                                                    <div class="photo-name">Изучение китайского языка. 2025 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="5">
+                        <img src="кабкитай/3_.jpeg" alt="Глобальное влияние 6">
+                                                                                                                                                    <div class="photo-name">Изучение китайского языка. 2025 год</div>
+
+                    </div>
+                   
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-arrow prev-arrow">&#10094;</button>
+                    <div class="carousel-indicators">
+                        <!-- Indicators will be generated by JavaScript -->
+                    </div>
+                    <button class="carousel-arrow next-arrow">&#10095;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="academic-subpage" id="international-page3">
+        <div class="content-body split-layout">
+            <div class="content-text">
+                <div class="text-content active">
+                    <h3 style="text-align: center;">26-28 февраля 2020 года - IV Форум городов атомной энергетики и промышленности</h3>
+                    <p style="text-align: left;">В течение трех дней форума прошли панельные дискуссии, стратегические и деловые игры, лекции, круглые столы. Были обсуждены вопросы социально-экономического развития территорий присутствия Росатома.</p>
+                    <p style="text-align: left;">Сформировано шесть тематических треков. Особое внимание уделено темам, связанным с социально-экономическим развитием городов к привязке к национальным целям. </p>
+                </div>
+            </div>
+            
+            <div class="image-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active" data-index="0">
+                        <img src="форум/1_.jpg" alt="Глобальное влияние 1">
+                                                                                                    <div class="photo-name">IV Форум городов атомной энергетики и промышленности. 2020 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="1">
+                        <img src="форум/2_.jpg" alt="Глобальное влияние 2">
+                                                                                                    <div class="photo-name">IV Форум городов атомной энергетики и промышленности. 2020 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="2">
+                        <img src="форум/3_.jpg" alt="Глобальное влияние 3">
+                                                                                                    <div class="photo-name">IV Форум городов атомной энергетики и промышленности. 2020 год</div>
+
+                    </div>
+                    <div class="carousel-slide" data-index="3">
+                        <img src="форум/4_.jpg" alt="Глобальное влияние 4">
+                                                                                                    <div class="photo-name">IV Форум городов атомной энергетики и промышленности. 2020 год</div>
+
+                    </div>
+                    
+                    </div>
+                   
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-arrow prev-arrow">&#10094;</button>
+                    <div class="carousel-indicators">
+                        <!-- Indicators will be generated by JavaScript -->
+                    </div>
+                    <button class="carousel-arrow next-arrow">&#10095;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Navigation -->
+    <div class="section-navigation">
+        <button class="btn nav-btn prev-section">‹ Назад</button>
+        <div class="section-indicators">
+            <span class="section-indicator active" data-section="1">День рождения Атомкласса</span>
+            <span class="section-indicator" data-section="2">Делегация из КНР</span>
+            <span class="section-indicator" data-section="3">Форум в Москве</span>
+        </div>
+        <button class="btn nav-btn next-section">Далее ›</button>
+    </div>
+
+    <!-- Main Navigation -->
+    <div class="navigation-buttons">
+        <button class="btn back-to-map">Вернуться к карте</button>
+    </div>
+</section>
+
+<!-- Page 2: Внедорожный опыт -->
+<section id="page2" class="content-page">
+    <!-- No Hero Section as requested -->
+
+    <!-- Grid Layout for Off-road Experience -->
+    <div class="content-body" style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+        <!-- Main Title -->
+        <div class="grid-header" style="text-align: center; margin-bottom: 3rem;">
+            <h2 style="font-size: 2.5rem; color: #2c3e50; margin-bottom: 1rem; border-bottom: 3px solid #e74c3c; padding-bottom: 1rem; display: inline-block;">
+Военно-патриотический клуб "Единство"
+            </h2>
+            <p style="font-size: 1.2rem; color: #666; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                Не все дороги бывают гладкими. Военно-патриотический клуб - это наш "внедорожный" опыт. Он учит детей и всю школу быть проходимыми, преодолевать любые трудности, держать удар и не терять ориентацию в сложных условиях. 
+                Где каждая трудность становится трамплином для роста, а каждый вызов - возможностью проявить характер.
+            </p>
+        </div>
+
+        <!-- Photo Grid with Text Overlays -->
+        <div class="experience-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+            
+            <!-- Item 1 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/1_.jpg" alt="Опыт 1" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Преодоление препятствий</h3>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/2_.jpg" alt="Опыт 2" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); color: #2c3e50;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Командная проходимость</h3>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/3_.webp" alt="Опыт 3" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Патриотическое воспитание</h3>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/4_.jpg" alt="Опыт 4" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Ресурсы из ничего</h3>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/5_.webp" alt="Опыт 5" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Скорость адаптации</h3>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/6_.jpg" alt="Опыт 6" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #2c3e50;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Прочность основ</h3>
+                </div>
+            </div>
+
+            <!-- Item 7 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/7_.jpg" alt="Опыт 7" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%); color: white;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Видимость в тумане</h3>
+                </div>
+            </div>
+
+            <!-- Item 8 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/8_.jpg" alt="Опыт 8" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); color: #2c3e50;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Топливо мотивации</h3>
+                </div>
+            </div>
+
+            <!-- Item 9 -->
+            <div class="grid-item" style="position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: #fff; transition: transform 0.3s ease;">
+                <div class="grid-image" style="width: 100%; height: 300px; overflow: hidden;">
+                    <img src="впк/9_.jpg" alt="Опыт 9" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                </div>
+                <div class="grid-content" style="padding: 1.5rem; background: linear-gradient(135deg, #cd9cf2 0%, #f6f3ff 100%); color: #2c3e50;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Новые горизонты</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="experience-summary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem; border-radius: 15px; text-align: center; margin-top: 2rem;">
+            <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">Опыт военно-патриотического клуба</h3>
+            <p style="font-size: 1.2rem; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+68 воспитанников ВПК «Единство» в 2025 году;<p>
+
+17 выпускников у клуба за 3 года;<p>
+
+9 выпускников клуба в 2025 году;<p>
+
+3 выпускника стали курсантами в предыдущие годы;<p>
+
+1 выпускник стал кадетом;<p>
+
+7 выпускников 2025 года выбрали военную профессию.                
+            </p>
+        </div>
+    </div>
+
+
+    
+    <!-- Navigation -->
+    <div class="navigation-buttons">
+        <button class="btn back-to-map">Вернуться к карте</button>
+    </div>
+</section>
+   
+<!-- Page 6: Атомная энергия -->
+<section id="page6" class="content-page">
+    <!-- Hero Section with Photo Background -->
+<div class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('атомная/атомка.jpg') center/cover; position: relative; overflow: hidden; min-height: 60vh; display: flex; align-items: center; justify-content: center;">    <!-- Animated atomic orbits -->
+    <div class="atomic-orbit" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; animation: orbit 10s linear infinite;">
+        <div class="electron" style="position: absolute; top: -10px; left: 50%; width: 20px; height: 20px; background: white; border-radius: 50%; transform: translateX(-50%);"></div>
+    </div>
+    <div class="atomic-orbit" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; animation: orbit 15s linear infinite reverse;">
+        <div class="electron" style="position: absolute; top: -10px; left: 50%; width: 15px; height: 15px; background: white; border-radius: 50%; transform: translateX(-50%);"></div>
+    </div>
+    
+    <!-- Text Box -->
+    <div style="position: relative; z-index: 2; text-align: center; color: white; padding: 2.5rem; max-width: 800px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 2rem;">
+        <h1 style="font-size: 3rem; margin-bottom: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">Атомная энергия</h1>
+        <p style="font-size: 1.3rem; line-height: 1.6; opacity: 0.95; margin: 0;">
+            Эта точка на нашей карте - не просто партнерство, а источник энергии для инноваций. Вместе с АЭС мы создаем уникальную образовательную среду, где теория встречается с практикой. Каждый совместный проект - это мост в будущее для наших детей.
+        </p>
+    </div>
+</div>
+        
+        <!-- Animated atomic orbits -->
+        <div class="atomic-orbit" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; animation: orbit 10s linear infinite;">
+            <div class="electron" style="position: absolute; top: -10px; left: 50%; width: 20px; height: 20px; background: white; border-radius: 50%; transform: translateX(-50%);"></div>
+        </div>
+        <div class="atomic-orbit" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; animation: orbit 15s linear infinite reverse;">
+            <div class="electron" style="position: absolute; top: -10px; left: 50%; width: 15px; height: 15px; background: white; border-radius: 50%; transform: translateX(-50%);"></div>
+        </div>
+    </div>
+
+    <!-- Atomic Core - Main Content -->
+    <div class="content-body" style="max-width: 1200px; margin: 0 auto; padding: 3rem 2rem;">
+        
+        <!-- Central Description -->
+        <div class="atomic-core" style="text-align: center; margin-bottom: 4rem; padding: 2rem; background: rgba(102, 126, 234, 0.1); border-radius: 20px; border: 2px solid rgba(102, 126, 234, 0.3);">
+            <h2 style="color: #2c3e50; font-size: 2rem; margin-bottom: 1.5rem;">Цепная реакция успеха</h2>
+            <p style="font-size: 1.1rem; line-height: 1.7; color: #555; max-width: 900px; margin: 0 auto;">
+                Атомная энергия в нашем контексте - это синергия четырех ключевых элементов, которые, 
+                взаимодействуя друг с другом, создают мощный импульс развития. Каждый элемент усиливает другие, 
+                создавая устойчивую образовательную экосистему с экспоненциальным ростом результатов.
+            </p>
+        </div>
+
+        <!-- Atomic Elements Grid -->
+        <div class="atomic-elements" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 3rem;">
+            
+          <!-- Element 1: Атом-лаборатория -->
+<div class="atomic-element" style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #4facfe; position: relative; overflow: hidden;">
+    <div class="element-header" style="text-align: center; margin-bottom: 2rem;">
+        <div class="element-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; font-weight: bold;">1</div>
+        <h3 style="color: #2c3e50; font-size: 1.4rem;">Атом-лаборатория</h3>
+    </div>
+    
+    <div class="element-photos" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <div class="photo-item" style="border-radius: 15px; overflow: hidden; height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <img src="атомная/1_.jpg" alt="Атом-лаборатория" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+</div>
+
+<!-- Element 2: День инженера -->
+<div class="atomic-element" style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #43e97b; position: relative; overflow: hidden;">
+    <div class="element-header" style="text-align: center; margin-bottom: 2rem;">
+        <div class="element-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; font-weight: bold;">2</div>
+        <h3 style="color: #2c3e50; font-size: 1.4rem;">День инженера</h3>
+    </div>
+    
+    <div class="element-photos" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <div class="photo-item" style="border-radius: 15px; overflow: hidden; height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <img src="атомная/3_.jpg" alt="День инженера" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+</div>
+
+<!-- Element 3: Зеленая энергия -->
+<div class="atomic-element" style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #fa709a; position: relative; overflow: hidden;">
+    <div class="element-header" style="text-align: center; margin-bottom: 2rem;">
+        <div class="element-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; font-weight: bold;">3</div>
+        <h3 style="color: #2c3e50; font-size: 1.4rem;">Зеленая энергия</h3>
+    </div>
+    
+    <div class="element-photos" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <div class="photo-item" style="border-radius: 15px; overflow: hidden; height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <img src="атомная/2_.webp" alt="Зеленая энергия" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+</div>
+
+<!-- Element 4: Карьера в атомной отрасли -->
+<div class="atomic-element" style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid #cd9cf2; position: relative; overflow: hidden;">
+    <div class="element-header" style="text-align: center; margin-bottom: 2rem;">
+        <div class="element-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #cd9cf2 0%, #f6f3ff 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; font-weight: bold;">4</div>
+        <h3 style="color: #2c3e50; font-size: 1.4rem;">Карьера в атомной отрасли</h3>
+    </div>
+    
+    <div class="element-photos" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        <div class="photo-item" style="border-radius: 15px; overflow: hidden; height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <img src="атомная/5_.jpg" alt="Карьера в атомной отрасли" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+</div>
+                
+              
+            </div>
+        </div>
+
+        <!-- Nuclear Reaction Visualization -->
+        <div class="reaction-visualization" style="text-align: center; margin: 4rem 0;">
+            <h3 style="color: #2c3e50; font-size: 1.8rem; margin-bottom: 2rem;">Цепная реакция инноваций</h3>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                <div class="reaction-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">1</div>
+                    <span style="color: #666; font-weight: 500;">Атом-лаборатория</span>
+                </div>
+                <div style="font-size: 2rem; color: #667eea;">+</div>
+                <div class="reaction-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">2</div>
+                    <span style="color: #666; font-weight: 500;">Инженерия</span>
+                </div>
+                <div style="font-size: 2rem; color: #667eea;">+</div>
+                <div class="reaction-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">3</div>
+                    <span style="color: #666; font-weight: 500;">Зеленая энергия</span>
+                </div>
+                <div style="font-size: 2rem; color: #667eea;">+</div>
+                <div class="reaction-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #cd9cf2 0%, #f6f3ff 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">4</div>
+                    <span style="color: #666; font-weight: 500;">Карьера</span>
+                </div>
+                <div style="font-size: 2rem; color: #667eea;">=</div>
+                <div class="reaction-result" style="text-align: center;">
+                    <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5rem; animation: pulse 2s infinite;">⚡</div>
+                    <span style="color: #2c3e50; font-weight: bold; font-size: 1.1rem;">Прорыв</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-buttons">
+        <button class="btn back-to-map">Вернуться к карте</button>
+    </div>
+</section>
+
+<!-- Page 7: Учимся вместе - растем как личность -->
+<section id="page7" class="content-page">
+    <!-- Main Content -->
+    <div class="content-body" style="max-width: 1200px; margin: 0 auto; padding: 4rem 2rem;">
+        
+        <!-- Page Header -->
+        <div class="page-header" style="text-align: center; margin-bottom: 4rem;">
+            <h1 style="color: #2c3e50; font-size: 2.5rem; margin-bottom: 1.5rem; font-weight: 400;">Учимся вместе - растем как личность</h1>
+            <p style="font-size: 1.2rem; line-height: 1.6; color: #666; max-width: 800px; margin: 0 auto;">
+Представьте сад, где растут разные растения. Одним нужно больше солнца, другим - тени, третьим - особой почвы. Но вместе они создают прекрасную экосистему. <p>
+    <p style="font-size: 1.2rem; line-height: 1.6; color: #666; max-width: 800px; margin: 0 auto;">Так и в нашей школе!            </p>
+        </div>
+
+        <!-- Introduction Text -->
+        <div class="intro-section" style="margin-bottom: 4rem;">
+            <div style="background: #f8f9fa; padding: 3rem; border-radius: 10px; border-left: 4px solid #2c3e50;">
+                <h2 style="color: #2c3e50; font-size: 2rem; margin-bottom: 1.5rem; font-weight: 400;">Философия совместного роста</h2>
+                <p style="line-height: 1.8; color: #555; margin-bottom: 1.5rem; font-size: 1.1rem;">
+                    Мы не просто "включаем" детей с ОПФР в образовательный процесс. Мы создаем среду, где различия становятся ресурсом для развития всех. Где каждый ребенок - и с особенностями, и без - учатся главному: видеть личность за любыми внешними проявлениями.
+                </p>
+                <p style="line-height: 1.8; color: #555; font-size: 1.1rem;">
+                    Сегодня мы можем увидеть, как дети с разными образовательными потребностями совместно поставили белорусскую народную батлейку. Каждый ребенок нашел свою роль согласно способностям. А на перемене - как ребенок с РАС помогает другим разобраться в сложной математической задачке. Это и есть настоящая инклюзия - когда все обогащают друг друга!
+                </p>
+            </div>
+        </div>
+
+        <!-- Categories Grid -->
+        <div class="categories-grid" style="display: grid; gap: 3rem; margin-bottom: 4rem;">
+            
+            <!-- Category 1: Педагогическое сообщество -->
+            <div class="category-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+                <div class="category-content">
+                    <h3 style="color: #2c3e50; font-size: 1.6rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #3498db; font-weight: 500;">Класс без границ</h3>
+                    <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                        Адаптивные учебные места с регулируемыми партами и специальным оборудованием.
+                    </p>
+                   
+                </div>
+                <div class="category-photos" style="display: grid; gap: 1rem;">
+                    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                        <img src="опфр/1_.jpg" alt="Педагогическое сообщество" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                        <img src="опфр/2_.jpg" alt="Педагогический совет" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 2: Родительское участие -->
+            <div class="category-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+                <div class="category-content">
+                    <h3 style="color: #2c3e50; font-size: 1.6rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; font-weight: 500;">Диалог возможностей</h3>
+                    <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                        Еженедельные встречи, где дети учатся понимать друг друга.
+                    </p>
+                   
+                </div>
+                <div class="category-photos" style="display: grid; gap: 1rem;">
+                    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                        <img src="опфр/5_.jpg" alt="Родительское участие" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                        <img src="опфр/6_.jpg" alt="Совместные мероприятия" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 3: Социальное партнерство -->
+            <div class="category-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+                <div class="category-content">
+                    <h3 style="color: #2c3e50; font-size: 1.6rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #27ae60; font-weight: 500;">Карта талантов</h3>
+                    <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                        Система выявления и развития сильных сторон каждого ребенка.
+                    </p>
+                </div>
+                <div class="category-photos" style="display: grid; gap: 1rem;">
+                    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                        <img src="опфр/3_.jpg" alt="Социальное партнерство" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                        <img src="опфр/4_.jpg" alt="Волонтерские проекты" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 4: Культурная среда -->
+            <div class="category-item" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;">
+                <div class="category-content">
+                    <h3 style="color: #2c3e50; font-size: 1.6rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f39c12; font-weight: 500;">Социальные пробы</h3>
+                    <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                        Проекты, где дети вместе решают реальные задачи школы.
+                    </p>
+                   
+                </div>
+                <div class="category-photos" style="display: grid; gap: 1rem;">
+    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+        <img src="опфр/7_.jpg" alt="Культурная среда" style="width: 100%; height: 100%; object-fit: cover; object-position: center 30%;">
+    </div>
+    <div style="border-radius: 8px; overflow: hidden; height: 200px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+        <img src="опфр/8_.jpg" alt="Творческие мероприятия" style="width: 100%; height: 100%; object-fit: cover; object-position: center 30%;">
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="conclusion" style="background: #2c3e50; color: white; padding: 3rem; border-radius: 10px; text-align: center;">
+            <h3 style="font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 300;">Вместе к гармоничному развитию</h3>
+            <p style="line-height: 1.7; font-size: 1.1rem; opacity: 0.9; max-width: 800px; margin: 0 auto;">
+                Образовательный путь - это совместное путешествие, где учителя, ученики, родители и партнеры 
+                объединены общей целью: создать среду, в которой каждый может раскрыть свой потенциал, 
+                развить таланты и стать гармоничной, социально ответственной личностью, готовой к вызовам современного мира.
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-buttons">
+        <button class="btn back-to-map">Вернуться к карте</button>
+    </div>
+</section>
+
+<!-- Page 5: Мои управленческие технологии -->
+<section id="page5" class="content-page">
+    <!-- Main Content -->
+    <div class="content-body" style="max-width: 1200px; margin: 0 auto; padding: 4rem 2rem;">
+        
+        <!-- Page Header -->
+        <div class="page-header" style="text-align: center; margin-bottom: 4rem;">
+            <h1 style="color: #2c3e50; font-size: 2.5rem; margin-bottom: 1.5rem; font-weight: 400;">Мои управленческие технологии</h1>
+            <p style="font-size: 1.2rem; line-height: 1.6; color: #666; max-width: 800px; margin: 0 auto;">
+                Современное управление требует современных инструментов. В нашем учреждении образования Bitrix24 используется как центральная платформа 
+                для эффективного руководства, координации команды и стратегического планирования.
+            </p>
+        </div>
+
+        <!-- Introduction -->
+        <div class="intro-section" style="margin-bottom: 4rem;">
+            <div style="background: #f8f9fa; padding: 2.5rem; border-radius: 10px;">
+                <h2 style="color: #2c3e50; font-size: 1.8rem; margin-bottom: 1.5rem; font-weight: 400;">Цифровая экосистема управления</h2>
+                <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem; font-size: 1.1rem;">
+                   Я не веду школу по наитию. Мои управленческие решения - это ответ на данные. Аналитика успеваемости, цифровые опросы, трекинг проектов - это наш спутниковый сигнал, который помогает избегать "пробок" и выбирать самый быстрый маршрут к цели.
+                </p>
+             
+            </div>
+        </div>
+
+       <!-- Bitrix Screenshots Section -->
+<div class="bitrix-screenshots" style="display: grid; gap: 4rem; margin-bottom: 4rem;">
+    
+    <!-- Screenshot 1 -->
+    <div class="screenshot-item" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: center;">
+        <div class="screenshot-content">
+            <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                <div style="width: 50px; height: 50px; background: #2c3e50; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                    <span style="color: white; font-weight: bold; font-size: 1.2rem;">1</span>
+                </div>
+                <h3 style="color: #2c3e50; font-size: 1.5rem; margin: 0; font-weight: 500;">Стратегическое планирование</h3>
+            </div>
+            <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                Использую модуль задач и проектов для  планирования работы школы. 
+                Через систему ставлю конкретные измеримые цели 
+                и контролирую выполнение стратегических инициатив.
+            </p>
+            <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                Каждый проект разбиваю на этапы с четкими сроками и ответственными. Система автоматически напоминает 
+                о приближающихся дедлайнах и позволяет оперативно вносить корректировки в планы.
+            </p>
+            <ul style="color: #555; line-height: 1.7; padding-left: 1.5rem;">
+                <li>Постановка и контроль целей развития школы</li>
+                <li>Мониторинг выполнения проектов</li>
+                <li>Прозрачность процессов для всех сотрудников</li>
+            </ul>
+        </div>
+        <div class="screenshot-image" style="border-radius: 10px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border: 1px solid #e0e0e0;">
+            <img src="битрис/1_.png" alt="Стратегическое планирование в Bitrix" style="width: 100%; height: auto; display: block;">
+        </div>
+    </div>
+
+    <!-- Screenshot 2 -->
+    <div class="screenshot-item" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: center;">
+        <div class="screenshot-content">
+            <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                <div style="width: 50px; height: 50px; background: #2c3e50; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                    <span style="color: white; font-weight: bold; font-size: 1.2rem;">2</span>
+                </div>
+                <h3 style="color: #2c3e50; font-size: 1.5rem; margin: 0; font-weight: 500;">Командное взаимодействие и коммуникация</h3>
+            </div>
+            <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                Корпоративный портал служит центральной точкой коммуникации для всего коллектива. 
+                Через него организую рабочие процессы, провожу совещания, распределяю задачи 
+                и обеспечиваю оперативное взаимодействие между подразделениями.
+            </p>
+            <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                Интегрированные чаты, видеоконференции и общие документы позволяют сохранять все обсуждения 
+                и решения в одном месте, создавая единое информационное пространство для управления школой.
+            </p>
+            <ul style="color: #555; line-height: 1.7; padding-left: 1.5rem;">
+                <li>Единая коммуникационная среда для коллектива</li>
+                <li>Архив всех обсуждений и документов</li>
+                <li>Быстрое принятие управленческих решений</li>
+            </ul>
+        </div>
+        <div class="screenshot-image" style="border-radius: 10px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border: 1px solid #e0e0e0;">
+            <img src="битрис/2_.png" alt="Командное взаимодействие в Bitrix" style="width: 100%; height: auto; display: block;">
+        </div>
+    </div>
+
+    <!-- Screenshot 3 -->
+    <div class="screenshot-item" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: center;">
+        <div class="screenshot-content">
+            <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                <div style="width: 50px; height: 50px; background: #2c3e50; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                    <span style="color: white; font-weight: bold; font-size: 1.2rem;">3</span>
+                </div>
+                <h3 style="color: #2c3e50; font-size: 1.5rem; margin: 0; font-weight: 500;">Аналитика и отчетность</h3>
+            </div>
+            <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                Система аналитики предоставляет мне полную картину работы школы в реальном времени. 
+                На основе встроенных отчетов  
+                анализирую эффективность работы школы.
+            </p>
+            <p style="line-height: 1.7; color: #555; margin-bottom: 1.2rem;">
+                Автоматизированная система отчетности экономит время и обеспечивает точность данных. 
+                Это позволяет сосредоточиться на важных вопросах, а не на рутинном сборе информации.
+            </p>
+            <ul style="color: #555; line-height: 1.7; padding-left: 1.5rem;">
+                <li>Автоматическая генерация отчетов</li>
+                <li>Анализ эффективности образовательных процессов</li>
+                <li>Прогнозирование и планирование на основе данных</li>
+            </ul>
+        </div>
+        <div class="screenshot-image" style="border-radius: 10px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.2); border: 1px solid #e0e0e0;">
+            <img src="битрис/3_.png" alt="Аналитика и отчетность в Bitrix" style="width: 100%; height: auto; display: block;">
+        </div>
+    </div>
+</div>
+
+        <!-- Benefits Summary -->
+        <div class="benefits-summary" style="background: #2c3e50; color: white; padding: 3rem; border-radius: 10px; margin-bottom: 3rem;">
+            <h3 style="font-size: 1.8rem; margin-bottom: 2rem; text-align: center; font-weight: 300;">Ключевые преимущества цифрового управления</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏱️</div>
+                    <h4 style="margin-bottom: 1rem; font-weight: 500;">Экономия времени</h4>
+                    <p style="opacity: 0.9; line-height: 1.6;">Автоматизация рутинных процессов освобождает время для стратегических задач</p>
+                </div>
+             
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
+                    <h4 style="margin-bottom: 1rem; font-weight: 500;">Командная эффективность</h4>
+                    <p style="opacity: 0.9; line-height: 1.6;">Прозрачность и согласованность действий всего коллектива</p>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+                    <h4 style="margin-bottom: 1rem; font-weight: 500;">Фокус на цели</h4>
+                    <p style="opacity: 0.9; line-height: 1.6;">Четкое видение стратегических целей и путей их достижения</p>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-buttons">
+        <button class="btn back-to-map">Вернуться к карте</button>
+    </div>
+</section>
+
+   <!-- Final Page -->
+<section id="final-page" class="content-page">
+    <!-- Big Video Section - Now takes 85% of viewport height -->
+    <div class="video-section" style="width: 100%; height: 85vh; position: relative; background: #000;">
+        <video 
+            id="final-video" 
+            style="width: 100%; height: 100%; object-fit: cover;" 
+            autoplay 
+            playsinline
+            controls
+        >
+            <source src="footage/IMG_7776.MOV" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Conclusion Content - Reduced padding since video is bigger -->
+    <div class="content-body" style="max-width: 1000px; margin: 0 auto; padding: 2rem 2rem;">
+
+        <!-- Final Message -->
+        <div style="text-align: center; background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); color: white; padding: 3rem; border-radius: 15px;">
+            <h2 style="font-size: 2rem; margin-bottom: 2rem; font-weight: 300;">Экспедиция в будущее</h2>
+            <p style="font-size: 1.2rem; line-height: 1.7; margin-bottom: 2rem; opacity: 0.95;">
+               Мы не просто приехали в точку "Б". Мы создали стартовую площадку для новых экспедиций. Миссия директора-навигатора - постоянно сканировать горизонт, видеть новые точки роста и смело прокладывать к ним маршруты, потому что лучшая дорога - та, которую построил сам.
+            </p>
+            <p style="font-size: 1.3rem; font-weight: bold; margin-top: 2rem;">
+                С уважением,<br>
+                <span style="font-size: 1.6rem; display: block; margin-top: 1rem;">Людмила Станиславовна Сосновская</span>
+                <span style="font-size: 1.1rem; opacity: 0.9;">Директор средней школы №3 г. Островца</span>
+            </p>
+        </div>
+
+        <!-- Restart Experience -->
+       <!-- Return to Map -->
+<div style="text-align: center; margin-top: 3rem;">
+    <button class="btn back-to-map" style="background: #2c3e50; padding: 1rem 2rem; font-size: 1.1rem;">
+        Вернуться к карте
+    </button>
+</div>
+    </div>
+</section>
+<script>
+function restartExperience() {
+    if (confirm("Начать маршрут успеха заново?")) {
+        // Clear storage
+        localStorage.clear();
+        
+        // Force reload to welcome page
+        window.location.href = window.location.origin + window.location.pathname;
+    }
+}
+
+</script>
+<script>
+    // Video unmute functionality
+    const finalVideo = document.getElementById('final-video');
+    const unmuteButton = document.getElementById('unmute-button');
+
+    
+
+    function restartExperience() {
+        if (confirm("Начать маршрут успеха заново?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    // Auto-play video when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        finalVideo.play().catch(e => {
+            console.log('Auto-play prevented, showing controls');
+            finalVideo.controls = true;
+        });
+    });
+</script>
+        
+      
+
+       <script>
+        // DOM Elements
+        const welcomePage = document.getElementById('welcome-page');
+        const mapPage = document.getElementById('map-page');
+        const videoContainer = document.getElementById('video-container');
+        const welcomeVideo = document.getElementById('welcome-video');
+        const playButton = document.getElementById('play-button');
+        const photo1Container = document.getElementById('photo1-container');
+        const photo2Container = document.getElementById('photo2-container');
+        const photo3Container = document.getElementById('photo3-container');
+        const photo4Container = document.getElementById('photo4-container');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const photo4Text = document.getElementById('photo4-text');
+        const slideshowText = document.getElementById('slideshow-text');
+        const interactivePoints = document.querySelectorAll('.interactive-point');
+        const finalPoint = document.getElementById('final-point');
+        const progressText = document.getElementById('progress-text');
+        const progressFill = document.getElementById('progress-fill');
+        const contentPages = document.querySelectorAll('.content-page');
+        const backToMapButtons = document.querySelectorAll('.back-to-map');
+        const nextPointButtons = document.querySelectorAll('.next-point');
+        const restartButton = document.querySelector('.restart-experience');
+
+        // State variables
+        let completedPoints = new Set();
+        let videoStarted = false;
+
+        // Initialize the website
+        function init() {
+            const progressLoaded = loadProgress();
+            
+            if (!progressLoaded) {
+                playButton.addEventListener('click', startVideo);
+                welcomeVideo.addEventListener('ended', startSlideshow);
+            }
+            
+            interactivePoints.forEach(point => {
+                point.addEventListener('click', handlePointClick);
+                point.addEventListener('mouseenter', showPointInfo);
+                point.addEventListener('mouseleave', hidePointInfo);
+            });
+            
+            backToMapButtons.forEach(button => {
+                button.addEventListener('click', showMapPage);
+            });
+            
+            if (restartButton) {
+                restartButton.addEventListener('click', restartExperience);
+            }
+            
+            initAllCarousels();
+            window.addEventListener('beforeunload', saveProgress);
+        }
+
+        function startVideo() {
+            if (videoStarted) return;
+            videoStarted = true;
+            playButton.style.display = 'none';
+            
+            welcomeVideo.play().then(() => {
+                setTimeout(() => {
+                    if (!videoContainer.classList.contains('hidden')) {
+                        startSlideshow();
+                    }
+                }, (welcomeVideo.duration * 1000) + 1000);
+            }).catch(error => {
+                startSlideshow();
+            });
+        }
+// International Section Navigation
+function initInternationalSection() {
+    const internationalSection = document.getElementById('page3');
+    if (!internationalSection) return;
+
+    const subpages = internationalSection.querySelectorAll('.academic-subpage');
+    const prevBtn = internationalSection.querySelector('.prev-section');
+    const nextBtn = internationalSection.querySelector('.next-section');
+    const indicators = internationalSection.querySelectorAll('.section-indicator');
+    
+    let currentSubpage = 0;
+
+    function showSubpage(index) {
+        subpages.forEach(page => page.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        subpages[index].classList.add('active');
+        indicators[index].classList.add('active');
+        initCarousel(subpages[index]);
+        currentSubpage = index;
+        prevBtn.style.opacity = index === 0 ? '0.5' : '1';
+        nextBtn.style.opacity = index === subpages.length - 1 ? '0.5' : '1';
+    }
+
+    prevBtn.addEventListener('click', () => {
+        if (currentSubpage > 0) showSubpage(currentSubpage - 1);
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentSubpage < subpages.length - 1) showSubpage(currentSubpage + 1);
+    });
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => showSubpage(index));
+    });
+
+    showSubpage(0);
+}
+        // Add this to your existing JavaScript code
+
+// Reset Progress Function
+function resetProgress() {
+    if (confirm("Вы уверены, что хотите сбросить весь прогресс? Все пройденные точки будут сброшены.")) {
+        // Clear localStorage
+        localStorage.clear();
+        
+        // Remove completed classes from all points
+        document.querySelectorAll('.interactive-point').forEach(point => {
+            point.classList.remove('completed');
+        });
+        
+        // Hide final point
+        const finalPoint = document.getElementById('final-point');
+        if (finalPoint) {
+            finalPoint.style.display = 'none';
+        }
+        
+        // Reset progress display
+        const progressText = document.getElementById('progress-text');
+        const progressFill = document.getElementById('progress-fill');
+        if (progressText && progressFill) {
+            progressText.textContent = "0/7 Шагов Пройдено";
+            progressFill.style.width = "0%";
+        }
+        
+        // Clear completed points set
+        if (typeof completedPoints !== 'undefined') {
+            completedPoints.clear();
+        }
+        
+        // Show confirmation message
+        alert("Прогресс сброшен! Вы можете начать маршрут заново.");
+        
+        // If we're on a content page, go back to map
+        if (mapPage.style.display === 'none') {
+            showMapPage();
+        }
+    }
+}
+
+// Add event listener for reset button
+function initResetButton() {
+    const resetBtn = document.querySelector('.reset-progress-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetProgress);
+    }
+}
+
+// Update your existing init function to include the reset button
+function init() {
+    const progressLoaded = loadProgress();
+    
+    if (!progressLoaded) {
+        playButton.addEventListener('click', startVideo);
+        welcomeVideo.addEventListener('ended', startSlideshow);
+    }
+    
+    interactivePoints.forEach(point => {
+        point.addEventListener('click', handlePointClick);
+        point.addEventListener('mouseenter', showPointInfo);
+        point.addEventListener('mouseleave', hidePointInfo);
+    });
+    
+    backToMapButtons.forEach(button => {
+        button.addEventListener('click', showMapPage);
+    });
+    
+    if (restartButton) {
+        restartButton.addEventListener('click', restartExperience);
+    }
+    
+    // Initialize reset button
+    initResetButton();
+    
+    initAllCarousels();
+    window.addEventListener('beforeunload', saveProgress);
+}
+
+        function startSlideshow() {
+            videoContainer.classList.remove('active');
+            videoContainer.classList.add('hidden');
+            welcomeMessage.classList.add('active');
+            showText('photo4-text');
+            
+            showMedia(photo4Container, 10000, function() {
+                showText('slideshow-text');
+                showMedia(photo1Container, 4000, function() {
+                    showMedia(photo2Container, 4000, function() {
+                        showMedia(photo3Container, 4000, function() {
+                            showMapPage();
+                        });
+                    });
+                });
+            });
+        }
+
+        function showMedia(mediaElement, duration, callback) {
+            mediaElement.classList.add('active');
+            setTimeout(() => {
+                mediaElement.classList.remove('active');
+                setTimeout(callback, 500);
+            }, duration);
+        }
+
+        function showText(textId) {
+            const textSections = document.querySelectorAll('.text-section');
+            textSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            const targetText = document.getElementById(textId);
+            if (targetText) {
+                targetText.classList.add('active');
+            }
+        }
+
+        function showMapPage() {
+            welcomePage.style.display = 'none';
+            mapPage.style.display = 'block';
+            contentPages.forEach(page => {
+                page.style.display = 'none';
+            });
+            updateProgress();
+            saveProgress();
+        }
+
+        function handlePointClick(event) {
+            const point = event.currentTarget;
+            const pageId = point.getAttribute('data-page');
+            
+            if (!point.id.startsWith('final')) {
+                completedPoints.add(point.id);
+                point.classList.add('completed');
+            }
+            
+            showContentPage(pageId);
+            updateProgress();
+            saveProgress();
+        }
+
+        function showContentPage(pageId) {
+    mapPage.style.display = 'none';
+    const contentPage = document.getElementById(pageId);
+    if (contentPage) {
+        contentPage.style.display = 'block';
+        contentPage.classList.add('fade-in');
+        
+        if (pageId === 'page1') {
+            initAcademicSection();
+        } else if (pageId === 'page3') {
+            initInternationalSection(); // Add this line
+        } else {
+            initCarousel(contentPage);
+        }
+    }
+    saveProgress();
+}
+
+        function initCompassPage() {
+    const infoNodes = document.querySelectorAll('.info-node');
+    const nodeCarousels = document.querySelectorAll('.node-carousel');
+    
+    // Initialize carousels for each node
+    nodeCarousels.forEach(carousel => {
+        const slides = carousel.querySelectorAll('.carousel-slide');
+        let currentSlide = 0;
+        
+        if (slides.length > 1) {
+            // Auto-rotate carousel every 4 seconds
+            setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 4000);
+        }
+        
+        // Show first slide
+        if (slides.length > 0) {
+            slides[0].classList.add('active');
+        }
+    });
+    
+    // Add click handlers for nodes
+    infoNodes.forEach(node => {
+        node.addEventListener('click', function() {
+            // Add visual feedback when clicked
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+}
+
+        function showPointInfo(event) {
+            const point = event.currentTarget;
+            const info = point.querySelector('.point-info');
+            if (info) {
+                info.style.display = 'block';
+            }
+        }
+
+        function hidePointInfo(event) {
+            const point = event.currentTarget;
+            const info = point.querySelector('.point-info');
+            if (info) {
+                info.style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const totalPoints = document.querySelectorAll('.interactive-point:not(#final-point)').length;
+            const completedCount = completedPoints.size;
+            progressText.textContent = `${completedCount}/${totalPoints} Шагов Пройдено`;
+            progressFill.style.width = `${(completedCount / totalPoints) * 100}%`;
+            if (completedCount >= totalPoints) {
+                finalPoint.style.display = 'flex';
+            }
+        }
+
+        // Academic Section Navigation
+        function initAcademicSection() {
+            const academicSection = document.getElementById('page1');
+            if (!academicSection) return;
+
+            const subpages = academicSection.querySelectorAll('.academic-subpage');
+            const prevBtn = academicSection.querySelector('.prev-section');
+            const nextBtn = academicSection.querySelector('.next-section');
+            const indicators = academicSection.querySelectorAll('.section-indicator');
+            
+            let currentSubpage = 0;
+
+            function showSubpage(index) {
+                subpages.forEach(page => page.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                subpages[index].classList.add('active');
+                indicators[index].classList.add('active');
+                initCarousel(subpages[index]);
+                currentSubpage = index;
+                prevBtn.style.opacity = index === 0 ? '0.5' : '1';
+                nextBtn.style.opacity = index === subpages.length - 1 ? '0.5' : '1';
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSubpage > 0) showSubpage(currentSubpage - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSubpage < subpages.length - 1) showSubpage(currentSubpage + 1);
+            });
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => showSubpage(index));
+            });
+
+            showSubpage(0);
+        }
+
+        // Carousel functionality
+        function initAllCarousels() {
+            contentPages.forEach(page => {
+                initCarousel(page);
+            });
+        }
+
+        function initCarousel(container) {
+            const slides = container.querySelectorAll('.carousel-slide');
+            const indicatorsContainer = container.querySelector('.carousel-indicators');
+            const prevArrow = container.querySelector('.prev-arrow');
+            const nextArrow = container.querySelector('.next-arrow');
+            
+            if (slides.length === 0) return;
+            
+            let currentSlide = 0;
+
+            // Generate indicators
+            if (indicatorsContainer) {
+                indicatorsContainer.innerHTML = '';
+                for (let i = 0; i < slides.length; i++) {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'indicator' + (i === 0 ? ' active' : '');
+                    indicator.setAttribute('data-index', i);
+                    indicatorsContainer.appendChild(indicator);
+                }
+            }
+
+            const indicators = container.querySelectorAll('.indicator');
+
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                currentSlide = index;
+            }
+
+            if (prevArrow) {
+                prevArrow.addEventListener('click', function() {
+                    let newIndex = currentSlide - 1;
+                    if (newIndex < 0) newIndex = slides.length - 1;
+                    showSlide(newIndex);
+                });
+            }
+
+            if (nextArrow) {
+                nextArrow.addEventListener('click', function() {
+                    let newIndex = currentSlide + 1;
+                    if (newIndex >= slides.length) newIndex = 0;
+                    showSlide(newIndex);
+                });
+            }
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => showSlide(index));
+            });
+            
+            showSlide(0);
+        }
+
+        // Progress persistence
+        function saveProgress() {
+            const progressData = {
+                completedPoints: Array.from(completedPoints),
+                currentPage: getCurrentPage(),
+                lastVisited: new Date().getTime()
+            };
+            localStorage.setItem('schoolPortfolioProgress', JSON.stringify(progressData));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('schoolPortfolioProgress');
+            if (saved) {
+                try {
+                    const progressData = JSON.parse(saved);
+                    if (progressData.completedPoints) {
+                        completedPoints = new Set(progressData.completedPoints);
+                        progressData.completedPoints.forEach(pointId => {
+                            const point = document.getElementById(pointId);
+                            if (point) point.classList.add('completed');
+                        });
+                    }
+                    updateProgress();
+                    if (progressData.currentPage && progressData.currentPage !== 'welcome') {
+                        showPageFromRefresh(progressData.currentPage);
+                        return true;
+                    }
+                } catch (e) {
+                    clearProgress();
+                }
+            }
+            return false;
+        }
+
+        function getCurrentPage() {
+            if (welcomePage.style.display !== 'none') return 'welcome';
+            if (mapPage.style.display !== 'none') return 'map';
+            const visiblePage = Array.from(contentPages).find(page => 
+                page.style.display !== 'none' && page.style.display !== ''
+            );
+            return visiblePage ? visiblePage.id : 'welcome';
+        }
+
+        function showPageFromRefresh(pageId) {
+            if (pageId === 'map') {
+                showMapPage();
+            } else if (pageId.startsWith('page') || pageId === 'final-page' || pageId === 'page1') {
+                showMapPage();
+                setTimeout(() => {
+                    showContentPage(pageId);
+                }, 100);
+            }
+        }
+
+        function clearProgress() {
+            localStorage.removeItem('schoolPortfolioProgress');
+            completedPoints.clear();
+        }
+
+        function restartExperience() {
+            clearProgress();
+            location.reload();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -2148,15 +2148,16 @@
     <!-- Big Video Section - Now takes 85% of viewport height -->
     <div class="video-section" style="width: 100%; height: 85vh; position: relative; background: #000;">
         <video 
-            id="final-video" 
-            style="width: 100%; height: 100%; object-fit: cover;" 
-            autoplay 
-            playsinline
-            controls
-        >
-            <source src="footage/IMG_7776.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+    id="final-video" 
+    style="width: 100%; height: 100%; object-fit: cover;" 
+    playsinline
+    controls
+    preload="none"
+    muted
+>
+    <source src="footage/IMG_7776.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
     </div>
 
     <!-- Conclusion Content - Reduced padding since video is bigger -->
@@ -2290,6 +2291,27 @@ function restartExperience() {
                 startSlideshow();
             });
         }
+
+        // Add this function to control final video
+function setupFinalVideo() {
+    const finalVideo = document.getElementById('final-video');
+    if (finalVideo) {
+        // Ensure it's not playing initially
+        finalVideo.pause();
+        finalVideo.currentTime = 0;
+        finalVideo.muted = true;
+    }
+}
+
+// Call this in your init function
+function init() {
+    const progressLoaded = loadProgress();
+    
+    // Setup video controls
+    setupFinalVideo();
+    
+    // ... rest of your existing init code
+}
 // International Section Navigation
 function initInternationalSection() {
     const internationalSection = document.getElementById('page3');

@@ -1339,14 +1339,25 @@
         </div>
     </section>
           <!-- Page 4: Турбо-режим -->
-    <section id="page4" class="content-page">
-        <!-- Hero Section with Video -->
+   <section id="page4" class="content-page">
+        <!-- Hero Section with Video - FIXED -->
         <div class="hero-section" style="justify-content: center; align-items: center;">
-            <video style="width: 80%; height: 80%; object-fit: contain;" autoplay muted loop playsinline>
+            <video 
+                id="page4-video"
+                style="width: 80%; height: 80%; object-fit: contain;" 
+                muted 
+                loop 
+                playsinline
+                preload="none"
+            >
                 <source src="footage/IMG_7676.MOV" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
+            <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; cursor: pointer; background: rgba(0,0,0,0.7); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                <div style="color: white; font-size: 2rem;">▶</div>
+            </div>
         </div>
+
 
         <!-- Single Page Layout -->
         <div class="content-body split-layout">
@@ -2145,24 +2156,23 @@
 
    <!-- Final Page -->
 <section id="final-page" class="content-page">
-    <!-- Big Video Section -->
-    <div class="video-section" style="width: 100%; height: 85vh; position: relative; background: #000;">
-        <video 
-            id="final-video" 
-            style="width: 100%; height: 100%; object-fit: cover;" 
-            playsinline
-            muted
-            preload="none"
-            data-src="footage/IMG_7776.MOV" <!-- Use data attribute -->
-        >
-            <!-- Remove source tag initially -->
-        </video>
-        <!-- Play button overlay -->
-        <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; cursor: pointer; background: rgba(0,0,0,0.7); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-            <div style="color: white; font-size: 2rem;">▶</div>
+        <!-- Big Video Section - FIXED -->
+        <div class="video-section" style="width: 100%; height: 85vh; position: relative; background: #000;">
+            <video 
+                id="final-video" 
+                style="width: 100%; height: 100%; object-fit: cover;" 
+                playsinline
+                muted
+                preload="none"
+            >
+                <source src="footage/IMG_7776.MOV" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Play button overlay -->
+            <div class="play-button-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; cursor: pointer; background: rgba(0,0,0,0.7); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                <div style="color: white; font-size: 2rem;">▶</div>
+            </div>
         </div>
-    </div>
-
     <!-- Conclusion Content - Reduced padding since video is bigger -->
     <div class="content-body" style="max-width: 1000px; margin: 0 auto; padding: 2rem 2rem;">
 
@@ -2225,7 +2235,7 @@ function restartExperience() {
         
       
 
-       <script>
+      <script>
     // DOM Elements
     const welcomePage = document.getElementById('welcome-page');
     const mapPage = document.getElementById('map-page');
@@ -2252,76 +2262,146 @@ function restartExperience() {
     let completedPoints = new Set();
     let videoStarted = false;
 
-    // Final video play functionality
+    // Page 4 video functionality - FIXED
+    function initPage4Video() {
+        const page4Video = document.getElementById('page4-video');
+        // FIXED: Properly select the play overlay within page4
+        const playOverlay = document.querySelector('#page4 .play-button-overlay');
+        
+        console.log('Initializing Page 4 video:', page4Video);
+        console.log('Page 4 play overlay:', playOverlay);
+        
+        if (page4Video && playOverlay) {
+            playOverlay.addEventListener('click', function() {
+                console.log('Page 4 play button clicked');
+                page4Video.play().then(() => {
+                    console.log('Page 4 video started playing');
+                    playOverlay.style.display = 'none';
+                }).catch(error => {
+                    console.log('Page 4 video play failed:', error);
+                    // Show controls if autoplay fails
+                    page4Video.controls = true;
+                    playOverlay.style.display = 'none';
+                });
+            });
+            
+            // Show play button again if video ends
+            page4Video.addEventListener('ended', function() {
+                console.log('Page 4 video ended');
+                playOverlay.style.display = 'flex';
+            });
+            
+            // Show play button if video is paused
+            page4Video.addEventListener('pause', function() {
+                console.log('Page 4 video paused');
+                playOverlay.style.display = 'flex';
+            });
+
+            // Load the video
+            page4Video.load();
+        } else {
+            console.error('Page 4 video or play overlay not found');
+        }
+    }
+
+    // Final video play functionality - FIXED
     function initFinalVideo() {
         const finalVideo = document.getElementById('final-video');
-        const playOverlay = document.querySelector('.play-button-overlay');
+        // FIXED: Properly select the play overlay within final-page
+        const playOverlay = document.querySelector('#final-page .play-button-overlay');
+        
+        console.log('Initializing Final video:', finalVideo);
+        console.log('Final play overlay:', playOverlay);
         
         if (finalVideo && playOverlay) {
             playOverlay.addEventListener('click', function() {
+                console.log('Final video play button clicked');
                 // Unmute and play the video
                 finalVideo.muted = false;
                 finalVideo.play().then(() => {
+                    console.log('Final video started playing');
                     // Hide the play button when video starts playing
                     playOverlay.style.display = 'none';
                 }).catch(error => {
-                    console.log('Play failed:', error);
+                    console.log('Final video play failed:', error);
                     // Show controls if autoplay fails
                     finalVideo.controls = true;
+                    playOverlay.style.display = 'none';
                 });
             });
             
             // Show play button again if video ends
             finalVideo.addEventListener('ended', function() {
+                console.log('Final video ended');
                 playOverlay.style.display = 'flex';
             });
             
             // Show play button if video is paused
             finalVideo.addEventListener('pause', function() {
+                console.log('Final video paused');
                 playOverlay.style.display = 'flex';
             });
-        }
-    }
 
-    // Call this function when showing the final page
-    // Update the showContentPage function
-function showContentPage(pageId) {
-    mapPage.style.display = 'none';
-    const contentPage = document.getElementById(pageId);
-    if (contentPage) {
-        contentPage.style.display = 'block';
-        contentPage.classList.add('fade-in');
-        
-        if (pageId === 'page1') {
-            initAcademicSection();
-        } else if (pageId === 'page3') {
-            initInternationalSection();
-        } else if (pageId === 'final-page') {
-            loadAndInitFinalVideo(); // Load video only when page is shown
+            // Load the video
+            finalVideo.load();
         } else {
-            initCarousel(contentPage);
+            console.error('Final video or play overlay not found');
         }
     }
-    saveProgress();
-}
 
-// New function to load final video only when needed
-function loadAndInitFinalVideo() {
-    const finalVideo = document.getElementById('final-video');
-    const playOverlay = document.querySelector('.play-button-overlay');
-    
-    // Only load the video source if it hasn't been loaded yet
-    if (!finalVideo.querySelector('source')) {
-        const source = document.createElement('source');
-        source.src = finalVideo.getAttribute('data-src');
-        source.type = 'video/mp4';
-        finalVideo.appendChild(source);
-        finalVideo.load(); // Load the video
+    // Update the showContentPage function - FIXED
+    function showContentPage(pageId) {
+        // Stop all videos when switching pages
+        stopAllVideos();
+        
+        mapPage.style.display = 'none';
+        const contentPage = document.getElementById(pageId);
+        if (contentPage) {
+            contentPage.style.display = 'block';
+            
+            console.log('Showing page:', pageId);
+            
+            if (pageId === 'page1') {
+                initAcademicSection();
+            } else if (pageId === 'page3') {
+                initInternationalSection();
+            } else if (pageId === 'page4') {
+                // Use setTimeout to ensure DOM is ready
+                setTimeout(() => {
+                    initPage4Video();
+                    initCarousel(contentPage);
+                }, 100);
+            } else if (pageId === 'final-page') {
+                // Use setTimeout to ensure DOM is ready
+                setTimeout(() => {
+                    initFinalVideo();
+                }, 100);
+            } else {
+                initCarousel(contentPage);
+            }
+        }
+        saveProgress();
     }
-    
-    initFinalVideo(); // Your existing initialization
-}
 
+    // Stop all videos function - FIXED
+    function stopAllVideos() {
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0;
+            
+            // Show play buttons for specific videos
+            if (video.id === 'page4-video') {
+                const playOverlay = document.querySelector('#page4 .play-button-overlay');
+                if (playOverlay) playOverlay.style.display = 'flex';
+            } else if (video.id === 'final-video') {
+                const playOverlay = document.querySelector('#final-page .play-button-overlay');
+                if (playOverlay) playOverlay.style.display = 'flex';
+            }
+        });
+    }
+
+    // Your existing functions remain the same...
     function startVideo() {
         if (videoStarted) return;
         videoStarted = true;
@@ -2422,36 +2502,6 @@ function loadAndInitFinalVideo() {
         if (resetBtn) {
             resetBtn.addEventListener('click', resetProgress);
         }
-    }
-
-    // Initialize the website
-    function init() {
-        const progressLoaded = loadProgress();
-        
-        if (!progressLoaded) {
-            playButton.addEventListener('click', startVideo);
-            welcomeVideo.addEventListener('ended', startSlideshow);
-        }
-        
-        interactivePoints.forEach(point => {
-            point.addEventListener('click', handlePointClick);
-            point.addEventListener('mouseenter', showPointInfo);
-            point.addEventListener('mouseleave', hidePointInfo);
-        });
-        
-        backToMapButtons.forEach(button => {
-            button.addEventListener('click', showMapPage);
-        });
-        
-        if (restartButton) {
-            restartButton.addEventListener('click', restartExperience);
-        }
-        
-        // Initialize reset button
-        initResetButton();
-        
-        initAllCarousels();
-        window.addEventListener('beforeunload', saveProgress);
     }
 
     function startSlideshow() {
@@ -2705,7 +2755,36 @@ function loadAndInitFinalVideo() {
         location.reload();
     }
 
-    // Remove the duplicate auto-play code at the bottom
+    // Initialize the website - FIXED
+    function init() {
+        const progressLoaded = loadProgress();
+        
+        if (!progressLoaded) {
+            playButton.addEventListener('click', startVideo);
+            welcomeVideo.addEventListener('ended', startSlideshow);
+        }
+        
+        interactivePoints.forEach(point => {
+            point.addEventListener('click', handlePointClick);
+            point.addEventListener('mouseenter', showPointInfo);
+            point.addEventListener('mouseleave', hidePointInfo);
+        });
+        
+        backToMapButtons.forEach(button => {
+            button.addEventListener('click', showMapPage);
+        });
+        
+        if (restartButton) {
+            restartButton.addEventListener('click', restartExperience);
+        }
+        
+        // Initialize reset button
+        initResetButton();
+        
+        initAllCarousels();
+        window.addEventListener('beforeunload', saveProgress);
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', init);
 </script>

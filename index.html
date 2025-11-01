@@ -2153,13 +2153,13 @@
 </section>
 
    <!-- Final Page -->
+<!-- Final Page -->
 <section id="final-page" class="content-page">
     <!-- Big Video Section - Now takes 85% of viewport height -->
     <div class="video-section" style="width: 100%; height: 85vh; position: relative; background: #000;">
         <video 
             id="final-video" 
             style="width: 100%; height: 100%; object-fit: cover;" 
-            autoplay 
             playsinline
             controls
         >
@@ -2185,12 +2185,11 @@
         </div>
 
         <!-- Restart Experience -->
-       <!-- Return to Map -->
-<div style="text-align: center; margin-top: 3rem;">
-    <button class="btn back-to-map" style="background: #2c3e50; padding: 1rem 2rem; font-size: 1.1rem;">
-        Вернуться к карте
-    </button>
-</div>
+        <div style="text-align: center; margin-top: 3rem;">
+            <button class="btn back-to-map" style="background: #2c3e50; padding: 1rem 2rem; font-size: 1.1rem;">
+                Вернуться к карте
+            </button>
+        </div>
     </div>
 </section>
 <script>
@@ -2219,13 +2218,7 @@ function restartExperience() {
         }
     }
 
-    // Auto-play video when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        finalVideo.play().catch(e => {
-            console.log('Auto-play prevented, showing controls');
-            finalVideo.controls = true;
-        });
-    });
+    
 </script>
         
       

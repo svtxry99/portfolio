@@ -2330,7 +2330,7 @@ function initInternationalSection() {
 
 // Reset Progress Function
 function resetProgress() {
-    if (confirm("Вы уверены, что хотите сбросить весь прогресс? Все пройденные точки будут сброшены.")) {
+    if (confirm("Вы уверены, что хотите сбросить весь прогресс? Весь маршрут начнется заново.")) {
         // Clear localStorage
         localStorage.clear();
         
@@ -2358,13 +2358,42 @@ function resetProgress() {
             completedPoints.clear();
         }
         
-        // Show confirmation message
-        alert("Прогресс сброшен! Вы можете начать маршрут заново.");
+        // Reset video state
+        videoStarted = false;
         
-        // If we're on a content page, go back to map
-        if (mapPage.style.display === 'none') {
-            showMapPage();
-        }
+        // Hide all pages and show welcome page
+        mapPage.style.display = 'none';
+        contentPages.forEach(page => {
+            page.style.display = 'none';
+        });
+        
+        // Reset welcome page to initial state
+        welcomePage.style.display = 'block';
+        videoContainer.classList.add('active');
+        videoContainer.classList.remove('hidden');
+        photo1Container.classList.remove('active');
+        photo2Container.classList.remove('active');
+        photo3Container.classList.remove('active');
+        photo4Container.classList.remove('active');
+        
+        // Reset video
+        welcomeVideo.currentTime = 0;
+        welcomeVideo.pause();
+        
+        // Show play button again
+        playButton.style.display = 'flex';
+        
+        // Reset text sections - HIDE the welcome content initially
+        const textSections = document.querySelectorAll('.text-section');
+        textSections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // HIDE the entire welcome message container
+        welcomeMessage.classList.remove('active');
+        
+        // Show confirmation message
+        alert("Прогресс сброшен! Маршрут начнется заново.");
     }
 }
 
@@ -2381,6 +2410,10 @@ function init() {
     const progressLoaded = loadProgress();
     
     if (!progressLoaded) {
+        playButton.addEventListener('click', startVideo);
+        welcomeVideo.addEventListener('ended', startSlideshow);
+    } else {
+        // If there was saved progress, still set up video controls
         playButton.addEventListener('click', startVideo);
         welcomeVideo.addEventListener('ended', startSlideshow);
     }
